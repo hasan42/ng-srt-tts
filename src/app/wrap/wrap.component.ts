@@ -55,7 +55,7 @@ export class WrapComponent implements OnInit {
     this.msg = 'current: ' + this.current
     let msg = new SpeechSynthesisUtterance();
 
-    let delay = this.textArr[this.current].time.delay;
+    let delay = this.textArr[this.current].time.delay / this.form.rate;
   
     msg.text = this.textArr[this.current].text;
     msg.volume = this.form.volume;
