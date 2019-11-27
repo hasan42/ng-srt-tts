@@ -1,0 +1,47 @@
+<div class="wrap">
+  <p>{{msg}}</p>
+  <form>
+    <div class="row">
+      <div class="col">
+        <div class="option">
+          <textarea [(ngModel)]="form.text" name="text" #text="ngModel" x-webkit-speech></textarea>
+        </div>
+      </div>
+      <div class="col">
+        <div class="option">
+          <label for="voice">Voice</label>
+          <select [(ngModel)]="form.voice" #voice="ngModel" name="voice" (change)="onChangeVoice($event.target.value)">
+            <ng-container *ngFor="let voice of voices; index as i; first as first; last as last">
+              <option [value]="voice.name">{{voice.name}}</option>
+            </ng-container>
+          </select>
+        </div>
+        <div class="option">
+          <label for="volume">Volume</label>
+          <input type="range" min="0" max="1" step="0.1" name="volume" [(ngModel)]="form.volume" #volume="ngModel" [value]="1">
+          {{form.volume}}
+        </div>
+        <div class="option">
+          <label for="rate">Rate</label>
+          <input type="range" min="0.1" max="10" step="0.1" name="rate" [(ngModel)]="form.rate" #rate="ngModel" [value]="1">
+          {{form.rate}}
+        </div>
+        <div class="option">
+          <label for="pitch">Pitch</label>
+          <input type="range" min="0" max="2" step="0.1" name="pitch" [(ngModel)]="form.pitch" #pitch="ngModel" [value]="1">
+          {{form.pitch}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="option">
+          <button (click)="pause()" *ngIf="!paused">pause</button>
+          <button (click)="resume()" *ngIf="paused">resume</button>
+          <button (click)="stop()">stop</button>
+          <button (click)="speak()">Speak</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

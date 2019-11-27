@@ -1,3 +1,4 @@
+// https://codepen.io/matt-west/pen/wGzuJ?editors=1010
 import { Component } from '@angular/core';
 
 @Component({
