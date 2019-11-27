@@ -52,6 +52,7 @@ export class WrapComponent implements OnInit {
 
   speak(nowmsg) {
     this.current = nowmsg;
+    this.msg = 'current: ' + this.current
     let msg = new SpeechSynthesisUtterance();
 
     let delay = this.textArr[this.current].time.delay;
@@ -66,9 +67,20 @@ export class WrapComponent implements OnInit {
     }
     setTimeout(()=>{
       window.speechSynthesis.speak(msg);
-      this.speak(this.current + 1)
+      if( this.current + 1 <  this.textArr.length) {
+        this.speak(this.current + 1)
+      }else{
+        this.msg = 'finish: ' + (this.current + 1)
+      }
+      
     }, delay)
     
+  }
+
+  cleanText(text){
+    let clean = text.join(' ');
+    clean = clean.replace(/<[^>]+>/g, '');
+    return clean;
   }
 
   textIt() {
@@ -77,41 +89,43 @@ export class WrapComponent implements OnInit {
     let newArr = [];
     let delayCommon = 0;
     this.textArr.forEach((item)=>{
-      let obj = {
-        id: null,
-        time: {
-          start: null,
-          end: null,
-          delay: null,
-          timer: null
-        }, 
-        text: null
-      };
-      let arr = item.split('\n');
+      if(item.length){
+        let obj = {
+          id: null,
+          time: {
+            start: null,
+            end: null,
+            delay: null,
+            timer: null
+          }, 
+          text: null
+        };
+        let arr = item.split('\n');
 
-      [obj.id, , ...obj.text] = arr;
+        [obj.id, , ...obj.text] = arr;
 
-      obj.text = obj.text.join(' ');
+        obj.text = this.cleanText(obj.text);
 
-      let timeArr = arr[1].split(' --> ');
-      [obj.time.start, obj.time.end] = timeArr;
+        let timeArr = arr[1].split(' --> ');
+        [obj.time.start, obj.time.end] = timeArr;
 
-      let delayArr = obj.time.start.split(':');
-      let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
-      let delayMM = (Number(delayArr[1]) * 60) * 1000
-      let delaySS = Number(delayArr[2].replace(',', '.')) * 1000
-      console.log(delayArr, delayHH, delayMM, delaySS);
-      obj.time.timer = delayHH + delayMM + delaySS
-      obj.time.delay = obj.time.timer - delayCommon
-      delayCommon = obj.time.timer
+        let delayArr = obj.time.start.split(':');
+        let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
+        let delayMM = (Number(delayArr[1]) * 60) * 1000
+        let delaySS = Number(delayArr[2].replace(',', '.')) * 1000
+        obj.time.timer = delayHH + delayMM + delaySS
+        obj.time.delay = obj.time.timer - delayCommon
+        delayCommon = obj.time.timer
 
-      newArr.push(obj);
+        newArr.push(obj);
+      }
     });
+      console.log(newArr);
     this.textArr = newArr;
-    console.log(newArr);
   }
 
   play() {
+    this.textIt()
     this.speak(0)
   }
   pause() {
