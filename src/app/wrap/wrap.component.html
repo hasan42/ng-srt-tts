@@ -36,10 +36,11 @@
     <div class="row">
       <div class="col">
         <div class="option">
+          <button (click)="textIt()">textIt</button>
           <button (click)="pause()" *ngIf="!paused">pause</button>
           <button (click)="resume()" *ngIf="paused">resume</button>
           <button (click)="stop()">stop</button>
-          <button (click)="speak()">Speak</button>
+          <button (click)="play()">Speak</button>
         </div>
       </div>
     </div>
