@@ -8,6 +8,15 @@
         </div>
       </div>
       <div class="col">
+        <h3>Control</h3>
+        <div class="option">
+          <button (click)="textIt()">textIt</button>
+          <button (click)="pause()" *ngIf="!paused">pause</button>
+          <button (click)="resume()" *ngIf="paused">resume</button>
+          <button (click)="stop()">stop</button>
+          <button (click)="play()">Speak</button>
+        </div>
+        <h3>Settings</h3>
         <div class="option">
           <label for="voice">Voice</label>
           <select [(ngModel)]="form.voice" #voice="ngModel" name="voice" (change)="onChangeVoice($event.target.value)">
@@ -35,13 +44,6 @@
     </div>
     <div class="row">
       <div class="col">
-        <div class="option">
-          <button (click)="textIt()">textIt</button>
-          <button (click)="pause()" *ngIf="!paused">pause</button>
-          <button (click)="resume()" *ngIf="paused">resume</button>
-          <button (click)="stop()">stop</button>
-          <button (click)="play()">Speak</button>
-        </div>
       </div>
     </div>
   </form>

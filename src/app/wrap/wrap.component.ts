@@ -26,6 +26,8 @@ export class WrapComponent implements OnInit {
 
   current: number = 0;
 
+  timer: any = null;
+
   constructor() {
     if ('speechSynthesis' in window) {
       this.msg = 'Support';
@@ -65,14 +67,13 @@ export class WrapComponent implements OnInit {
     if (this.form.voice) {
       msg.voice = speechSynthesis.getVoices().filter(voice => voice.name == this.form.voice)[0];
     }
-    setTimeout(()=>{
+    this.timer = setTimeout(()=>{
       window.speechSynthesis.speak(msg);
       if( this.current + 1 <  this.textArr.length) {
         this.speak(this.current + 1)
       }else{
         this.msg = 'finish: ' + (this.current + 1)
       }
-      
     }, delay)
     
   }
@@ -125,6 +126,7 @@ export class WrapComponent implements OnInit {
   }
 
   play() {
+    clearTimeout(this.timer);
     this.textIt()
     this.speak(0)
   }
@@ -138,6 +140,7 @@ export class WrapComponent implements OnInit {
   }
   stop() {
     window.speechSynthesis.cancel();
+    clearTimeout(this.timer);
   }
 
 }
