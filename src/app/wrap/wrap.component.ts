@@ -17,6 +17,7 @@ export class WrapComponent implements OnInit {
   form = {
     text: null,
     voice: null,
+    timeline: null,
     volume: 1,
     rate: 1,
     pitch: 1
@@ -27,6 +28,8 @@ export class WrapComponent implements OnInit {
   current: number = 0;
 
   timer: any = null;
+
+  timelineChange: boolean = false;
 
   constructor() {
     if ('speechSynthesis' in window) {
@@ -51,13 +54,27 @@ export class WrapComponent implements OnInit {
   onChangeVoice(voice){
     this.form.voice = voice
   }
+  onChangeTimeline(timeline){
+    this.timelineChange = true
+    this.form.timeline = timeline
+    // console.log(this.form);
+  }
 
   speak(nowmsg) {
-    this.current = nowmsg;
+    // console.log(this.form);
+    let delay = null;
+    if(this.timelineChange){
+      delay = 0;
+      this.timelineChange = false;
+      this.current = Number(this.form.timeline);
+    }else{
+      delay = this.textArr[this.current].time.delay / this.form.rate;
+      this.current = nowmsg;
+    }
+    // console.log(this.current, delay);
     this.msg = 'current: ' + this.current
     let msg = new SpeechSynthesisUtterance();
 
-    let delay = this.textArr[this.current].time.delay / this.form.rate;
   
     msg.text = this.textArr[this.current].text;
     msg.volume = this.form.volume;
@@ -121,8 +138,9 @@ export class WrapComponent implements OnInit {
         newArr.push(obj);
       }
     });
-      console.log(newArr);
+      // console.log(newArr);
     this.textArr = newArr;
+    // console.log(this.form);
   }
 
   play() {

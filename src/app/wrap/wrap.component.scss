@@ -10,9 +10,36 @@
   flex-basis: 50%;
 }
 .option {
+  margin: 5px 0;
   textarea {
     display: block;
     width: calc(100% - 50px);
     height: calc(100vh - 150px);
+  }
+}
+.range {
+  position: relative;
+  
+  input[type="range"] {
+    width: 100%;
+  }
+  
+  datalist {
+    display: flex;
+    justify-content: space-between;
+    height: auto;
+    overflow: hidden;
+    margin-top: 6px; 
+    option {
+      padding: 0;
+      // &:before {
+      //   content: '';
+      //   display: block;
+      //   width: 0;
+      //   height: auto;
+      //   padding-left: 3px;
+      //   text-indent: 0;
+      // }
+    }
   }
 }

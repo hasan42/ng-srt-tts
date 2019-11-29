@@ -4,7 +4,11 @@
     <div class="row">
       <div class="col">
         <div class="option">
-          <textarea [(ngModel)]="form.text" name="text" #text="ngModel" x-webkit-speech></textarea>
+          <textarea [(ngModel)]="form.text" 
+                    name="text" 
+                    #text="ngModel" 
+                    x-webkit-speech 
+                    (change)="textIt()"></textarea>
         </div>
       </div>
       <div class="col">
@@ -16,10 +20,46 @@
           <button (click)="stop()">stop</button>
           <button (click)="play()">Speak</button>
         </div>
+        <div class="option">
+          <p>Current sub: {{form.timeline + 1}}</p>
+          <div class="range">
+            <input type="range"
+                   min="0" 
+                   [max]="textArr.length - 1" 
+                   step="1" 
+                   list="tickmarks" 
+                   name="timeline" 
+                   [(ngModel)]="form.timeline" 
+                   #timeline="ngModel"
+                   (change)="onChangeTimeline($event.target.value)"
+                   [value]="form.timeline">
+            <datalist id="tickmarks">
+              <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
+                <option [value]="tick.id">
+              </ng-container>
+
+
+              <!-- <option value="0" label="0%">
+              <option value="10">
+              <option value="20">
+              <option value="30">
+              <option value="40">
+              <option value="50" label="50%">
+              <option value="60">
+              <option value="70">
+              <option value="80">
+              <option value="90">
+              <option value="100" label="100%"> -->
+            </datalist>
+          </div>
+        </div>
         <h3>Settings</h3>
         <div class="option">
           <label for="voice">Voice</label>
-          <select [(ngModel)]="form.voice" #voice="ngModel" name="voice" (change)="onChangeVoice($event.target.value)">
+          <select [(ngModel)]="form.voice" 
+                  #voice="ngModel" 
+                  name="voice" 
+                  (change)="onChangeVoice($event.target.value)">
             <ng-container *ngFor="let voice of voices; index as i; first as first; last as last">
               <option [value]="voice.name">{{voice.name}}</option>
             </ng-container>
@@ -27,17 +67,38 @@
         </div>
         <div class="option">
           <label for="volume">Volume</label>
-          <input type="range" min="0" max="1" step="0.1" name="volume" [(ngModel)]="form.volume" #volume="ngModel" [value]="1">
+          <input type="range" 
+                 min="0" 
+                 max="1" 
+                 step="0.1" 
+                 name="volume" 
+                 [(ngModel)]="form.volume" 
+                 #volume="ngModel" 
+                 [value]="1">
           {{form.volume}}
         </div>
         <div class="option">
           <label for="rate">Rate</label>
-          <input type="range" min="0.1" max="10" step="0.1" name="rate" [(ngModel)]="form.rate" #rate="ngModel" [value]="1">
+          <input type="range" 
+                 min="0.1" 
+                 max="10" 
+                 step="0.1" 
+                 name="rate" 
+                 [(ngModel)]="form.rate" 
+                 #rate="ngModel" 
+                 [value]="1">
           {{form.rate}}
         </div>
         <div class="option">
           <label for="pitch">Pitch</label>
-          <input type="range" min="0" max="2" step="0.1" name="pitch" [(ngModel)]="form.pitch" #pitch="ngModel" [value]="1">
+          <input type="range" 
+                 min="0" 
+                 max="2" 
+                 step="0.1" 
+                 name="pitch" 
+                 [(ngModel)]="form.pitch" 
+                 #pitch="ngModel" 
+                 [value]="1">
           {{form.pitch}}
         </div>
       </div>
