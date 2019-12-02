@@ -106,6 +106,21 @@ export class WrapComponent implements OnInit {
   }
 
   textIt() {
+    let checkStyleSub = this.form.text.split('\n');
+    if(checkStyleSub[0] === '1'){
+      this.textToArrStr()
+    }else if(checkStyleSub[0] === '[Script Info]'){
+      this.textToArrAss()
+    }else{
+      this.msg = 'wrong format';
+    }
+  }
+
+  textToArrAss() {
+    
+  }
+
+  textToArrStr() {
     this.textArr = this.form.text.split('\n\n');
 
     let newArr = [];
