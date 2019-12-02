@@ -10,6 +10,8 @@ export class WrapComponent implements OnInit {
   msg: string = null;
   ssIsSupport: boolean = true;
 
+  format: string = null;
+
   voices: any = []
 
   paused: boolean = false;
@@ -99,25 +101,67 @@ export class WrapComponent implements OnInit {
     
   }
 
-  cleanText(text){
+  cleanTextSrt(text){
     let clean = text.join(' ');
     clean = clean.replace(/<[^>]+>/g, '');
     return clean;
   }
+  cleanTextAss(text){
+    let clean = text.join('');
+    clean = clean.replace(/({([^>]+)})/ig, '');
+    return clean;
+  }
 
-  textIt() {
+  checkFormatSub() {
     let checkStyleSub = this.form.text.split('\n');
     if(checkStyleSub[0] === '1'){
+      this.format = 'str';
       this.textToArrStr()
     }else if(checkStyleSub[0] === '[Script Info]'){
+      this.format = 'ass';
       this.textToArrAss()
     }else{
+      this.format = null;
       this.msg = 'wrong format';
     }
   }
 
   textToArrAss() {
-    
+    let formatArr = [];
+    let newArr = this.form.text.split('\n');
+    let startText = newArr.findIndex(item => item === '[Events]');
+    newArr.splice(0, startText + 1);
+
+    let formatSub = newArr.splice(0, 1);
+    formatSub = formatSub[0].replace('Format: ', '');
+    formatSub = formatSub.split(', ')
+    let formatSubLength = formatSub.length
+    formatSub = formatSub.reduce((a,b)=> (a[b]=null,a),{});
+    console.log(formatSubLength);
+    newArr.forEach((item)=>{
+      if(item.length){
+        item = item.replace('Dialogue: ', '');
+
+        let obj = {};
+        for(let k in formatSub) obj[k]=formatSub[k];
+          // console.log(obj);
+        let keys = Object.keys( obj );
+        let arr = item.split(',');
+        for (let i = 0; i < formatSubLength - 1; i++) {
+          obj[keys[i]] = arr[i]
+        }
+        let last = arr.slice(formatSubLength - 1);
+        last = this.cleanTextAss(last)
+        // console.log(last);
+        obj[keys[formatSubLength - 1]] = last
+
+        // [obj.Layer, obj.Start, obj.End, obj.Style, obj.Name, obj.MarginL, obj.MarginR, obj.MarginV, obj.Effect, ...obj.Text ] = arr;
+
+        formatArr.push(obj)
+      }
+    });
+    this.textArr = formatArr;
+    console.log(formatArr);
   }
 
   textToArrStr() {
@@ -141,7 +185,7 @@ export class WrapComponent implements OnInit {
 
         [obj.id, , ...obj.text] = arr;
 
-        obj.text = this.cleanText(obj.text);
+        obj.text = this.cleanTextSrt(obj.text);
 
         let timeArr = arr[1].split(' --> ');
         [obj.time.start, obj.time.end] = timeArr;
@@ -157,14 +201,12 @@ export class WrapComponent implements OnInit {
         newArr.push(obj);
       }
     });
-      // console.log(newArr);
     this.textArr = newArr;
-    // console.log(this.form);
   }
 
   play() {
     clearTimeout(this.timer);
-    this.textIt()
+    this.checkFormatSub()
     this.speak(0)
   }
   pause() {

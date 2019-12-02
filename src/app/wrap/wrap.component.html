@@ -8,13 +8,13 @@
                     name="text" 
                     #text="ngModel" 
                     x-webkit-speech 
-                    (change)="textIt()"></textarea>
+                    (change)="checkFormatSub()"></textarea>
         </div>
       </div>
       <div class="col">
         <h3>Control</h3>
         <div class="option">
-          <button (click)="textIt()">textIt</button>
+          <button (click)="checkFormatSub()">textit</button>
           <button (click)="pause()" *ngIf="!paused">pause</button>
           <button (click)="resume()" *ngIf="paused">resume</button>
           <button (click)="stop()">stop</button>
