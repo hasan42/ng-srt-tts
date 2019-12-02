@@ -21,7 +21,7 @@
           <button (click)="play()">Speak</button>
         </div>
         <div class="option">
-          <p>Current sub: {{form.timeline + 1}}</p>
+          <p>Selected sub: {{form.timeline}}; Selected time: {{getTime()}} </p>
           <div class="range">
             <input type="range"
                    min="0" 
@@ -31,11 +31,11 @@
                    name="timeline" 
                    [(ngModel)]="form.timeline" 
                    #timeline="ngModel"
-                   (change)="onChangeTimeline($event.target.value)"
+                   (click)="onChangeTimeline($event.target.value)"
                    [value]="form.timeline">
             <datalist id="tickmarks">
               <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
-                <option [value]="tick.id">
+                <option [value]="i">
               </ng-container>
 
 

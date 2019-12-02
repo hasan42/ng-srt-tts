@@ -17,7 +17,7 @@ export class WrapComponent implements OnInit {
   form = {
     text: null,
     voice: null,
-    timeline: null,
+    timeline: 0,
     volume: 1,
     rate: 1,
     pitch: 1
@@ -51,13 +51,17 @@ export class WrapComponent implements OnInit {
     this.voices = window.speechSynthesis.getVoices();
   }
 
+  getTime() {
+    if(this.textArr.length)
+      return this.textArr[this.form.timeline].time.start
+  }
+
   onChangeVoice(voice){
     this.form.voice = voice
   }
   onChangeTimeline(timeline){
     this.timelineChange = true
     this.form.timeline = timeline
-    // console.log(this.form);
   }
 
   speak(nowmsg) {
