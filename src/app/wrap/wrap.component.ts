@@ -108,7 +108,10 @@ export class WrapComponent implements OnInit {
   }
   cleanTextAss(text){
     let clean = text.join('');
-    clean = clean.replace(/({([^>]+)})/ig, '');
+    clean = clean.replace(/{[^}]+}/g, '');
+    clean = clean.replace(/\\N/g, ' ');
+    // clean = clean.replace(String.fromCharCode(92),'');
+    // clean = clean.replace(/{.+}/g, '');
     return clean;
   }
 
@@ -137,14 +140,14 @@ export class WrapComponent implements OnInit {
     formatSub = formatSub.split(', ')
     let formatSubLength = formatSub.length
     formatSub = formatSub.reduce((a,b)=> (a[b]=null,a),{});
-    console.log(formatSubLength);
-    newArr.forEach((item)=>{
+    // console.log(formatSubLength);
+    let delayCommon = 0;
+    newArr.forEach((item, index)=>{
       if(item.length){
         item = item.replace('Dialogue: ', '');
 
         let obj = {};
         for(let k in formatSub) obj[k]=formatSub[k];
-          // console.log(obj);
         let keys = Object.keys( obj );
         let arr = item.split(',');
         for (let i = 0; i < formatSubLength - 1; i++) {
@@ -155,9 +158,26 @@ export class WrapComponent implements OnInit {
         // console.log(last);
         obj[keys[formatSubLength - 1]] = last
 
-        // [obj.Layer, obj.Start, obj.End, obj.Style, obj.Name, obj.MarginL, obj.MarginR, obj.MarginV, obj.Effect, ...obj.Text ] = arr;
+        let delayArr = obj['Start'].split(':');
+        let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
+        let delayMM = (Number(delayArr[1]) * 60) * 1000
+        let delaySS = Number(delayArr[2]) * 1000
+        let timer = delayHH + delayMM + delaySS
+        let delay = timer - delayCommon
+        delayCommon = timer
 
-        formatArr.push(obj)
+        let standartObj = {
+          id: index,
+          time: {
+            start: obj['Start'],
+            end: obj['End'],
+            delay: delay,
+            timer: timer
+          }, 
+          text: obj[keys[formatSubLength - 1]]
+        };
+
+        formatArr.push(standartObj)
       }
     });
     this.textArr = formatArr;
