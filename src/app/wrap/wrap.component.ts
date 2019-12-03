@@ -102,17 +102,24 @@ export class WrapComponent implements OnInit {
   }
 
   cleanTextSrt(text){
-    let clean = text.join(' ');
-    clean = clean.replace(/<[^>]+>/g, '');
+    let clean = text.join(' ').replace(/<[^>]+>/g, '');
     return clean;
   }
   cleanTextAss(text){
-    let clean = text.join('');
-    clean = clean.replace(/{[^}]+}/g, '');
-    clean = clean.replace(/\\N/g, ' ');
-    // clean = clean.replace(String.fromCharCode(92),'');
-    // clean = clean.replace(/{.+}/g, '');
+    let clean = text.join('').replace(/{[^}]+}/g, '').replace(/\\N/g, ' ');
     return clean;
+  }
+
+  makeTimer(time){
+    let delayArr = time.split(':');
+    let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
+    let delayMM = (Number(delayArr[1]) * 60) * 1000
+    if(delayArr[2].indexOf(',')){
+      delayArr[2].replace(',', '.')
+    }
+    let delaySS = Number(delayArr[2]) * 1000
+    let timer = delayHH + delayMM + delaySS
+    return timer
   }
 
   checkFormatSub() {
@@ -140,7 +147,7 @@ export class WrapComponent implements OnInit {
     formatSub = formatSub.split(', ')
     let formatSubLength = formatSub.length
     formatSub = formatSub.reduce((a,b)=> (a[b]=null,a),{});
-    // console.log(formatSubLength);
+    
     let delayCommon = 0;
     newArr.forEach((item, index)=>{
       if(item.length){
@@ -150,20 +157,13 @@ export class WrapComponent implements OnInit {
         for(let k in formatSub) obj[k]=formatSub[k];
         let keys = Object.keys( obj );
         let arr = item.split(',');
-        for (let i = 0; i < formatSubLength - 1; i++) {
-          obj[keys[i]] = arr[i]
-        }
+        for (let i = 0; i < formatSubLength - 1; i++) obj[keys[i]] = arr[i]
         let last = arr.slice(formatSubLength - 1);
-        last = this.cleanTextAss(last)
-        // console.log(last);
+        last = this.cleanTextAss(last);
         obj[keys[formatSubLength - 1]] = last
 
-        let delayArr = obj['Start'].split(':');
-        let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
-        let delayMM = (Number(delayArr[1]) * 60) * 1000
-        let delaySS = Number(delayArr[2]) * 1000
-        let timer = delayHH + delayMM + delaySS
-        let delay = timer - delayCommon
+        let timer = this.makeTimer(obj['Start'])
+        let delay = timer - delayCommon < 0 ? 0 : timer - delayCommon
         delayCommon = timer
 
         let standartObj = {
@@ -210,12 +210,8 @@ export class WrapComponent implements OnInit {
         let timeArr = arr[1].split(' --> ');
         [obj.time.start, obj.time.end] = timeArr;
 
-        let delayArr = obj.time.start.split(':');
-        let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
-        let delayMM = (Number(delayArr[1]) * 60) * 1000
-        let delaySS = Number(delayArr[2].replace(',', '.')) * 1000
-        obj.time.timer = delayHH + delayMM + delaySS
-        obj.time.delay = obj.time.timer - delayCommon
+        obj.time.timer = this.makeTimer(obj.time.start)
+        obj.time.delay = obj.time.timer - delayCommon < 0 ? 0 : obj.time.timer - delayCommon
         delayCommon = obj.time.timer
 
         newArr.push(obj);
