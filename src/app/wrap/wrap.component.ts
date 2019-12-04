@@ -19,13 +19,17 @@ export class WrapComponent implements OnInit {
   form = {
     text: null,
     voice: null,
-    timeline: 0,
+    timeline: -1,
     volume: 1,
     rate: 1,
     pitch: 1
   };
 
   textArr: any = [];
+  fullTextArr: any = [];
+  subStyleType: any = [];
+
+  subStyleSelected: string = null;
 
   current: number = 0;
 
@@ -54,22 +58,57 @@ export class WrapComponent implements OnInit {
   }
 
   getTime() {
-    if(this.textArr.length)
-      return this.textArr[this.form.timeline].time.start
+    if(this.textArr.length){
+      console.log(this.form.timeline);
+      if(Number(this.form.timeline) === -1){
+        return 'in order'
+      }else{
+        return this.textArr[this.form.timeline].time.start
+      }
+    }
   }
 
   onChangeVoice(voice){
     this.form.voice = voice
   }
+
   onChangeTimeline(timeline){
     this.timelineChange = true
     this.form.timeline = timeline
   }
 
+  onChangeStyleSub(style){
+    this.subStyleSelected = style;
+    this.filterTextByStyle();
+  }
+
+  getCountSubByStyle(style){
+    return this.fullTextArr.filter(item=>item.style===style).length
+  }
+
+  filterTextByStyle() {
+    let filtredArr = [];
+    let fullArr = this.fullTextArr;
+    let delayCommon = 0;
+    if(this.subStyleSelected === 'All'){
+      this.textArr = fullArr;
+    }else{
+      filtredArr = fullArr.filter(item=>item.style===this.subStyleSelected)
+      filtredArr.forEach((item,index)=>{
+        item.time.delay = item.time.timer - delayCommon
+        delayCommon = item.time.timer
+      })
+
+      this.textArr = filtredArr;
+    }
+    
+    console.log(this.textArr);
+  }
+
   speak(nowmsg) {
     // console.log(this.form);
     let delay = null;
-    if(this.timelineChange){
+    if(this.timelineChange && Number(this.form.timeline) !== -1){
       delay = 0;
       this.timelineChange = false;
       this.current = Number(this.form.timeline);
@@ -114,7 +153,7 @@ export class WrapComponent implements OnInit {
     let delayArr = time.split(':');
     let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
     let delayMM = (Number(delayArr[1]) * 60) * 1000
-    if(delayArr[2].indexOf(',')){
+    if(delayArr[2].indexOf(',') >= 0){
       delayArr[2].replace(',', '.')
     }
     let delaySS = Number(delayArr[2]) * 1000
@@ -128,12 +167,27 @@ export class WrapComponent implements OnInit {
       this.format = 'str';
       this.textToArrStr()
     }else if(checkStyleSub[0] === '[Script Info]'){
+    // }else if(checkStyleSub[0] === '[Script Info]' || checkStyleSub[0].indexOf('Dialogue: ') >= 0){
       this.format = 'ass';
+      this.takeStyleAss()
       this.textToArrAss()
     }else{
       this.format = null;
       this.msg = 'wrong format';
     }
+  }
+
+  takeStyleAss() {
+    let styleArr = [];
+    let newArr = this.form.text.split('\n');
+    // let startText = newArr.findIndex(item => item.indexOf(' Styles]') >= 0);
+    // let finishText = newArr.findIndex(item => item === '[Events]');
+    newArr.filter(item=>item.indexOf('Style: ')===0).forEach((item,index)=>{
+      let el = item.replace('Style: ', '').split(',');
+      styleArr.push(el[0])
+    })
+    console.log(styleArr);
+    this.subStyleType = styleArr;
   }
 
   textToArrAss() {
@@ -156,30 +210,40 @@ export class WrapComponent implements OnInit {
         let obj = {};
         for(let k in formatSub) obj[k]=formatSub[k];
         let keys = Object.keys( obj );
+
         let arr = item.split(',');
         for (let i = 0; i < formatSubLength - 1; i++) obj[keys[i]] = arr[i]
+
         let last = arr.slice(formatSubLength - 1);
         last = this.cleanTextAss(last);
         obj[keys[formatSubLength - 1]] = last
 
         let timer = this.makeTimer(obj['Start'])
-        let delay = timer - delayCommon < 0 ? 0 : timer - delayCommon
-        delayCommon = timer
 
         let standartObj = {
           id: index,
           time: {
             start: obj['Start'],
             end: obj['End'],
-            delay: delay,
+            delay: null,
             timer: timer
           }, 
-          text: obj[keys[formatSubLength - 1]]
+          text: obj[keys[formatSubLength - 1]],
+          style: obj['Style']
         };
 
         formatArr.push(standartObj)
       }
     });
+
+    formatArr.sort((a,b)=>{
+      return a.time.timer - b.time.timer
+    }).forEach((item, index)=>{
+      // let delay = item.time.timer - delayCommon < 0 ? 0 : item.time.timer - delayCommon
+      item.time.delay = item.time.timer - delayCommon
+      delayCommon = item.time.timer
+    });
+    this.fullTextArr = formatArr;
     this.textArr = formatArr;
     console.log(formatArr);
   }
@@ -222,7 +286,7 @@ export class WrapComponent implements OnInit {
 
   play() {
     clearTimeout(this.timer);
-    this.checkFormatSub()
+    // this.checkFormatSub()
     this.speak(0)
   }
   pause() {

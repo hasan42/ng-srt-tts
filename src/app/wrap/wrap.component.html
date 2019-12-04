@@ -20,11 +20,33 @@
           <button (click)="stop()">stop</button>
           <button (click)="play()">Speak</button>
         </div>
+        <div class="option" *ngIf="subStyleType.length">
+          <div>
+            <input type="radio"
+                   name="contact" 
+                   id="choiceStyleAll"
+                   value="All"
+                   checked
+                   (click)="onChangeStyleSub($event.target.value)">
+              <label for="choiceStyleAll" (click)="onChangeStyleSub($event.target.value)">All {{fullTextArr.length}}</label>
+          </div>
+          <ng-container *ngFor="let style of subStyleType; index as i; first as first; last as last">
+            <div *ngIf="getCountSubByStyle(style) > 0">
+              <input type="radio" 
+                     name="contact" 
+                     [id]="choiceStyle + style"
+                     [value]="style"
+                     (click)="onChangeStyleSub($event.target.value)">
+              <label [for]="choiceStyle + style" 
+                     (click)="onChangeStyleSub($event.target.value)">{{style}} {{getCountSubByStyle(style)}}</label>
+            </div>
+          </ng-container>
+        </div>
         <div class="option">
-          <p>Selected sub: {{form.timeline}}; Selected time: {{getTime()}} </p>
+          <p>Selected sub index: {{form.timeline}}; Selected time: {{getTime()}} </p>
           <div class="range">
             <input type="range"
-                   min="0" 
+                   min="-1" 
                    [max]="textArr.length - 1" 
                    step="1" 
                    list="tickmarks" 
@@ -34,6 +56,7 @@
                    (click)="onChangeTimeline($event.target.value)"
                    [value]="form.timeline">
             <datalist id="tickmarks">
+              <option value="-1">
               <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
                 <option [value]="i">
               </ng-container>
