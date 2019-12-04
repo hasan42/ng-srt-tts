@@ -59,7 +59,6 @@ export class WrapComponent implements OnInit {
 
   getTime() {
     if(this.textArr.length){
-      console.log(this.form.timeline);
       if(Number(this.form.timeline) === -1){
         return 'in order'
       }else{
@@ -102,7 +101,7 @@ export class WrapComponent implements OnInit {
       this.textArr = filtredArr;
     }
     
-    console.log(this.textArr);
+    // console.log(this.textArr);
   }
 
   speak(nowmsg) {
@@ -186,7 +185,7 @@ export class WrapComponent implements OnInit {
       let el = item.replace('Style: ', '').split(',');
       styleArr.push(el[0])
     })
-    console.log(styleArr);
+    // console.log(styleArr);
     this.subStyleType = styleArr;
   }
 
@@ -245,7 +244,7 @@ export class WrapComponent implements OnInit {
     });
     this.fullTextArr = formatArr;
     this.textArr = formatArr;
-    console.log(formatArr);
+    // console.log(formatArr);
   }
 
   textToArrStr() {
