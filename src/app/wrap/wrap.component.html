@@ -1,4 +1,9 @@
 <div class="wrap">
+  <div>
+    <h1>Subtitles to Speech</h1>
+    <span *ngIf="ssIsSupport" title="TTS is support"><fa-icon [icon]="faCheck"></fa-icon></span>
+    <span *ngIf="!ssIsSupport" title="TTS NO support"><fa-icon [icon]="faTimes"></fa-icon></span>
+  </div>
   <p>{{msg}}</p>
   <form>
     <div class="row">
@@ -12,70 +17,60 @@
         </div>
       </div>
       <div class="col">
-        <h3>Control</h3>
-        <div class="option">
-          <button (click)="checkFormatSub()">textit</button>
-          <button (click)="pause()" *ngIf="!paused">pause</button>
-          <button (click)="resume()" *ngIf="paused">resume</button>
-          <button (click)="stop()">stop</button>
-          <button (click)="play()">Speak</button>
+        <div>
+          Enter text
         </div>
-        <div class="option" *ngIf="subStyleType.length">
-          <div>
-            <input type="radio"
-                   name="contact" 
-                   id="choiceStyleAll"
-                   value="All"
-                   checked
-                   (click)="onChangeStyleSub($event.target.value)">
-              <label for="choiceStyleAll" (click)="onChangeStyleSub($event.target.value)">All {{fullTextArr.length}}</label>
+        <div>
+          <h3>Control</h3>
+          <div class="option">
+            <button (click)="play()" *ngIf="!played" title="Start speech"><fa-icon [icon]="faPlay"></fa-icon></button>
+            <button (click)="stop()" *ngIf="played" title="Stop speech"><fa-icon [icon]="faStop"></fa-icon></button>
           </div>
-          <ng-container *ngFor="let style of subStyleType; index as i; first as first; last as last">
-            <div *ngIf="getCountSubByStyle(style) > 0">
-              <input type="radio" 
+          <div class="option" *ngIf="subStyleType.length">
+            <div class="radio">
+              <input type="radio"
                      name="contact" 
-                     [id]="choiceStyle + style"
-                     [value]="style"
+                     id="choiceStyleAll"
+                     value="All"
+                     checked
                      (click)="onChangeStyleSub($event.target.value)">
-              <label [for]="choiceStyle + style" 
-                     (click)="onChangeStyleSub($event.target.value)">{{style}} {{getCountSubByStyle(style)}}</label>
+                <label for="choiceStyleAll" (click)="onChangeStyleSub($event.target.value)">All ({{fullTextArr.length}})</label>
             </div>
-          </ng-container>
-        </div>
-        <div class="option">
-          <p>Selected sub index: {{form.timeline}}; Selected time: {{getTime()}} </p>
-          <div class="range">
-            <input type="range"
-                   min="-1" 
-                   [max]="textArr.length - 1" 
-                   step="1" 
-                   list="tickmarks" 
-                   name="timeline" 
-                   [(ngModel)]="form.timeline" 
-                   #timeline="ngModel"
-                   (click)="onChangeTimeline($event.target.value)"
-                   [value]="form.timeline">
-            <datalist id="tickmarks">
-              <option value="-1">
-              <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
-                <option [value]="i">
-              </ng-container>
-
-
-              <!-- <option value="0" label="0%">
-              <option value="10">
-              <option value="20">
-              <option value="30">
-              <option value="40">
-              <option value="50" label="50%">
-              <option value="60">
-              <option value="70">
-              <option value="80">
-              <option value="90">
-              <option value="100" label="100%"> -->
-            </datalist>
+            <ng-container *ngFor="let style of subStyleType; index as i; first as first; last as last">
+              <div class="radio" *ngIf="getCountSubByStyle(style) > 0">
+                <input type="radio" 
+                       name="contact" 
+                       [id]="choiceStyle + style"
+                       [value]="style"
+                       (click)="onChangeStyleSub($event.target.value)">
+                <label [for]="choiceStyle + style" 
+                       (click)="onChangeStyleSub($event.target.value)">{{style}} ({{getCountSubByStyle(style)}})</label>
+              </div>
+            </ng-container>
+          </div>
+          <div class="option">
+            <p>Selected sub index: {{form.timeline}}; Selected time: {{getTime()}} </p>
+            <div class="range">
+              <input type="range"
+                     min="-1" 
+                     [max]="textArr.length - 1" 
+                     step="1" 
+                     list="tickmarks" 
+                     name="timeline" 
+                     [(ngModel)]="form.timeline" 
+                     #timeline="ngModel"
+                     (click)="onChangeTimeline($event.target.value)"
+                     [value]="form.timeline">
+              <datalist id="tickmarks">
+                <option value="-1">
+                <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
+                  <option [value]="i">
+                </ng-container>
+              </datalist>
+            </div>
           </div>
         </div>
+        
         <h3>Settings</h3>
         <div class="option">
           <label for="voice">Voice</label>

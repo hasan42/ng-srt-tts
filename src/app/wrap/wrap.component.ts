@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faStop, faPlay, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-wrap',
@@ -7,7 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WrapComponent implements OnInit {
 
+  faCheck = faCheck;
+  faTimes = faTimes;
+  faStop = faStop;
+  faPlay = faPlay;
+
   msg: string = null;
+  error: boolean = false;
   ssIsSupport: boolean = true;
 
   format: string = null;
@@ -15,6 +22,7 @@ export class WrapComponent implements OnInit {
   voices: any = []
 
   paused: boolean = false;
+  played: boolean = false;
 
   form = {
     text: null,
@@ -46,6 +54,7 @@ export class WrapComponent implements OnInit {
       };
     } else {
       this.msg = 'No support';
+      this.error = true;
       this.ssIsSupport = false;
     }
   }
@@ -172,6 +181,7 @@ export class WrapComponent implements OnInit {
       this.textToArrAss()
     }else{
       this.format = null;
+      this.error = true;
       this.msg = 'wrong format';
     }
   }
@@ -284,7 +294,8 @@ export class WrapComponent implements OnInit {
   }
 
   play() {
-    clearTimeout(this.timer);
+    this.stop();
+    this.played = true;
     // this.checkFormatSub()
     this.speak(0)
   }
@@ -297,6 +308,7 @@ export class WrapComponent implements OnInit {
     window.speechSynthesis.resume();
   }
   stop() {
+    this.played = false;
     window.speechSynthesis.cancel();
     clearTimeout(this.timer);
   }
