@@ -42,8 +42,12 @@ export class WrapComponent implements OnInit {
   current: number = 0;
 
   timer: any = null;
+  delay: number = null;
 
   timelineChange: boolean = false;
+
+  time: number = 0;
+  interval;
 
   constructor() {
     if ('speechSynthesis' in window) {
@@ -115,16 +119,18 @@ export class WrapComponent implements OnInit {
 
   speak(nowmsg) {
     // console.log(this.form);
-    let delay = null;
+    console.log('speak start ' + this.delay);
     if(this.timelineChange && Number(this.form.timeline) !== -1){
-      delay = 0;
+      this.delay = 0;
+    console.log('if true ' + this.delay);
       this.timelineChange = false;
       this.current = Number(this.form.timeline);
     }else{
-      delay = this.textArr[this.current].time.delay / this.form.rate;
+    console.log('if false ' + this.delay);
       this.current = nowmsg;
+      this.delay = this.textArr[this.current].time.delay / this.form.rate;
     }
-    // console.log(this.current, delay);
+    console.log('delay current ' + this.textArr[this.current].time.delay);
     this.msg = 'current: ' + this.current
     let msg = new SpeechSynthesisUtterance();
 
@@ -137,6 +143,7 @@ export class WrapComponent implements OnInit {
     if (this.form.voice) {
       msg.voice = speechSynthesis.getVoices().filter(voice => voice.name == this.form.voice)[0];
     }
+    console.log('delay start ' + this.delay);
     this.timer = setTimeout(()=>{
       window.speechSynthesis.speak(msg);
       if( this.current + 1 <  this.textArr.length) {
@@ -144,7 +151,7 @@ export class WrapComponent implements OnInit {
       }else{
         this.msg = 'finish: ' + (this.current + 1)
       }
-    }, delay)
+    }, this.delay)
     
   }
 
@@ -162,10 +169,11 @@ export class WrapComponent implements OnInit {
     let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
     let delayMM = (Number(delayArr[1]) * 60) * 1000
     if(delayArr[2].indexOf(',') >= 0){
-      delayArr[2].replace(',', '.')
+      delayArr[2] = delayArr[2].replace(',', '.')
     }
     let delaySS = Number(delayArr[2]) * 1000
     let timer = delayHH + delayMM + delaySS
+    // console.log(timer);
     return timer
   }
 
@@ -274,7 +282,7 @@ export class WrapComponent implements OnInit {
           }, 
           text: null
         };
-        let arr = item.split('\n');
+        let arr = item.split('\n').filter(el=>el!=='');
 
         [obj.id, , ...obj.text] = arr;
 
@@ -282,9 +290,11 @@ export class WrapComponent implements OnInit {
 
         let timeArr = arr[1].split(' --> ');
         [obj.time.start, obj.time.end] = timeArr;
-
+        // console.log(timeArr);
         obj.time.timer = this.makeTimer(obj.time.start)
+        // console.log(obj.time.timer);
         obj.time.delay = obj.time.timer - delayCommon < 0 ? 0 : obj.time.timer - delayCommon
+        // console.log(obj.time.delay);
         delayCommon = obj.time.timer
 
         newArr.push(obj);
@@ -297,6 +307,9 @@ export class WrapComponent implements OnInit {
     this.stop();
     this.played = true;
     // this.checkFormatSub()
+    this.interval = setInterval(() => {
+      this.time++;
+    },1000)
     this.speak(0)
   }
   pause() {

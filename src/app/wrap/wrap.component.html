@@ -1,15 +1,13 @@
 <div class="wrap">
   <div>
     <h1>Subtitles to Speech</h1>
-    <span *ngIf="ssIsSupport" title="TTS is support"><fa-icon [icon]="faCheck"></fa-icon></span>
-    <span *ngIf="!ssIsSupport" title="TTS NO support"><fa-icon [icon]="faTimes"></fa-icon></span>
   </div>
-  <p>{{msg}}</p>
   <form>
     <div class="row">
       <div class="col">
         <div class="option">
           <textarea [(ngModel)]="form.text" 
+                    placeholder="Enter text"
                     name="text" 
                     #text="ngModel" 
                     x-webkit-speech 
@@ -17,106 +15,113 @@
         </div>
       </div>
       <div class="col">
-        <div>
-          Enter text
+        <div>{{time}}</div>
+        <div *ngIf="!ssIsSupport" class="option">
+          <span title="TTS NO support"><fa-icon [icon]="faTimes"></fa-icon> TTS NO support</span>
         </div>
-        <div>
-          <h3>Control</h3>
-          <div class="option">
-            <button (click)="play()" *ngIf="!played" title="Start speech"><fa-icon [icon]="faPlay"></fa-icon></button>
-            <button (click)="stop()" *ngIf="played" title="Stop speech"><fa-icon [icon]="faStop"></fa-icon></button>
+        <div class="option">
+          <button class="control-btn" (click)="play()" *ngIf="!played" title="Start speech"><fa-icon [icon]="faPlay"></fa-icon> Start speech</button>
+          <button class="control-btn" (click)="stop()" *ngIf="played" title="Stop speech"><fa-icon [icon]="faStop"></fa-icon> Stop speech</button>
+        </div>
+        <div class="option mt-10" *ngIf="subStyleType.length">
+          <p>Select subtitles type to read</p>
+          <div class="radio">
+            <input type="radio"
+                   name="contact" 
+                   id="choiceStyleAll"
+                   value="All"
+                   checked
+                   (click)="onChangeStyleSub($event.target.value)">
+              <label for="choiceStyleAll" (click)="onChangeStyleSub($event.target.value)">All ({{fullTextArr.length}})</label>
           </div>
-          <div class="option" *ngIf="subStyleType.length">
-            <div class="radio">
-              <input type="radio"
+          <ng-container *ngFor="let style of subStyleType; index as i; first as first; last as last">
+            <div class="radio" *ngIf="getCountSubByStyle(style) > 0">
+              <input type="radio" 
                      name="contact" 
-                     id="choiceStyleAll"
-                     value="All"
-                     checked
+                     [id]="choiceStyle + style"
+                     [value]="style"
                      (click)="onChangeStyleSub($event.target.value)">
-                <label for="choiceStyleAll" (click)="onChangeStyleSub($event.target.value)">All ({{fullTextArr.length}})</label>
+              <label [for]="choiceStyle + style" 
+                     (click)="onChangeStyleSub($event.target.value)">{{style}} ({{getCountSubByStyle(style)}})</label>
             </div>
-            <ng-container *ngFor="let style of subStyleType; index as i; first as first; last as last">
-              <div class="radio" *ngIf="getCountSubByStyle(style) > 0">
-                <input type="radio" 
-                       name="contact" 
-                       [id]="choiceStyle + style"
-                       [value]="style"
-                       (click)="onChangeStyleSub($event.target.value)">
-                <label [for]="choiceStyle + style" 
-                       (click)="onChangeStyleSub($event.target.value)">{{style}} ({{getCountSubByStyle(style)}})</label>
-              </div>
-            </ng-container>
-          </div>
-          <div class="option">
-            <p>Selected sub index: {{form.timeline}}; Selected time: {{getTime()}} </p>
-            <div class="range">
-              <input type="range"
-                     min="-1" 
-                     [max]="textArr.length - 1" 
-                     step="1" 
-                     list="tickmarks" 
-                     name="timeline" 
-                     [(ngModel)]="form.timeline" 
-                     #timeline="ngModel"
-                     (click)="onChangeTimeline($event.target.value)"
-                     [value]="form.timeline">
-              <datalist id="tickmarks">
-                <option value="-1">
-                <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
-                  <option [value]="i">
-                </ng-container>
-              </datalist>
-            </div>
+          </ng-container>
+        </div>
+        <div class="option">
+          <p>Selected sub index: {{form.timeline}}; Selected time: {{getTime()}} </p>
+          <div class="range">
+            <input type="range"
+                   min="-1" 
+                   [max]="textArr.length - 1" 
+                   step="1" 
+                   list="tickmarks" 
+                   name="timeline" 
+                   [(ngModel)]="form.timeline" 
+                   #timeline="ngModel"
+                   (click)="onChangeTimeline($event.target.value)"
+                   [value]="form.timeline">
+            <datalist id="tickmarks">
+              <option value="-1"></option>
+              <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
+                <option [value]="i"></option>
+              </ng-container>
+            </datalist>
           </div>
         </div>
         
         <h3>Settings</h3>
         <div class="option">
           <label for="voice">Voice</label>
-          <select [(ngModel)]="form.voice" 
-                  #voice="ngModel" 
-                  name="voice" 
-                  (change)="onChangeVoice($event.target.value)">
-            <ng-container *ngFor="let voice of voices; index as i; first as first; last as last">
-              <option [value]="voice.name">{{voice.name}}</option>
-            </ng-container>
-          </select>
+          <div class="select">
+            <select [(ngModel)]="form.voice" 
+                    #voice="ngModel" 
+                    name="voice" 
+                    (change)="onChangeVoice($event.target.value)">
+              <ng-container *ngFor="let voice of voices; index as i; first as first; last as last">
+                <option [value]="voice.name">{{voice.name}}</option>
+              </ng-container>
+            </select>
+          </div>
         </div>
         <div class="option">
           <label for="volume">Volume</label>
-          <input type="range" 
-                 min="0" 
-                 max="1" 
-                 step="0.1" 
-                 name="volume" 
-                 [(ngModel)]="form.volume" 
-                 #volume="ngModel" 
-                 [value]="1">
+          <div class="range">
+            <input type="range" 
+                   min="0" 
+                   max="1" 
+                   step="0.1" 
+                   name="volume" 
+                   [(ngModel)]="form.volume" 
+                   #volume="ngModel" 
+                   [value]="1">
+          </div>
           {{form.volume}}
         </div>
         <div class="option">
           <label for="rate">Rate</label>
-          <input type="range" 
-                 min="0.1" 
-                 max="10" 
-                 step="0.1" 
-                 name="rate" 
-                 [(ngModel)]="form.rate" 
-                 #rate="ngModel" 
-                 [value]="1">
+          <div class="range">
+            <input type="range" 
+                   min="0.1" 
+                   max="10" 
+                   step="0.1" 
+                   name="rate" 
+                   [(ngModel)]="form.rate" 
+                   #rate="ngModel" 
+                   [value]="1">
+          </div>
           {{form.rate}}
         </div>
         <div class="option">
           <label for="pitch">Pitch</label>
-          <input type="range" 
-                 min="0" 
-                 max="2" 
-                 step="0.1" 
-                 name="pitch" 
-                 [(ngModel)]="form.pitch" 
-                 #pitch="ngModel" 
-                 [value]="1">
+          <div class="range">
+            <input type="range" 
+                   min="0" 
+                   max="2" 
+                   step="0.1" 
+                   name="pitch" 
+                   [(ngModel)]="form.pitch" 
+                   #pitch="ngModel" 
+                   [value]="1">
+          </div>
           {{form.pitch}}
         </div>
       </div>
