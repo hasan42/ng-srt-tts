@@ -71,7 +71,7 @@
         <h3>Settings</h3>
         <div class="option">
           <label for="voice">Voice</label>
-          <div class="select">
+          <div class="select mt-10">
             <select [(ngModel)]="form.voice" 
                     #voice="ngModel" 
                     name="voice" 
@@ -83,46 +83,61 @@
           </div>
         </div>
         <div class="option">
-          <label for="volume">Volume</label>
+          <label for="volume">Volume: {{form.volume}}</label>
           <div class="range">
             <input type="range" 
                    min="0" 
                    max="1" 
                    step="0.1" 
+                   list="volumemarks" 
                    name="volume" 
                    [(ngModel)]="form.volume" 
                    #volume="ngModel" 
                    [value]="1">
+            <datalist id="volumemarks">
+              <ng-container *ngFor="let tick of makeArray(0,1,0.1); index as i; first as first; last as last">
+                <option [value]="tick"></option>
+              </ng-container>
+            </datalist>
           </div>
-          {{form.volume}}
         </div>
         <div class="option">
-          <label for="rate">Rate</label>
+          <label for="rate">Rate: {{form.rate}}</label>
           <div class="range">
             <input type="range" 
                    min="0.1" 
                    max="10" 
                    step="0.1" 
+                   list="ratemarks" 
                    name="rate" 
                    [(ngModel)]="form.rate" 
                    #rate="ngModel" 
                    [value]="1">
+            <datalist id="ratemarks">
+              <ng-container *ngFor="let tick of makeArray(0,10,1); index as i; first as first; last as last">
+                <option [value]="tick"></option>
+              </ng-container>
+            </datalist>
           </div>
-          {{form.rate}}
         </div>
         <div class="option">
-          <label for="pitch">Pitch</label>
+          <label for="pitch">Pitch: {{form.pitch}}</label>
           <div class="range">
             <input type="range" 
                    min="0" 
                    max="2" 
                    step="0.1" 
+                   list="pitchmarks" 
                    name="pitch" 
                    [(ngModel)]="form.pitch" 
                    #pitch="ngModel" 
                    [value]="1">
+            <datalist id="pitchmarks">
+              <ng-container *ngFor="let tick of makeArray(0,2,0.1); index as i; first as first; last as last">
+                <option [value]="tick"></option>
+              </ng-container>
+            </datalist>
           </div>
-          {{form.pitch}}
         </div>
       </div>
     </div>

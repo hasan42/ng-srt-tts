@@ -64,6 +64,7 @@ export class WrapComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.makeArray(-1, 1, 0.1)
   }
 
   loadVoices(){
@@ -119,33 +120,28 @@ export class WrapComponent implements OnInit {
 
   speak(nowmsg) {
     // console.log(this.form);
-    console.log('speak start ' + this.delay);
     if(this.timelineChange && Number(this.form.timeline) !== -1){
       this.delay = 0;
-    console.log('if true ' + this.delay);
       this.timelineChange = false;
       this.current = Number(this.form.timeline);
     }else{
-    console.log('if false ' + this.delay);
       this.current = nowmsg;
       this.delay = this.textArr[this.current].time.delay / this.form.rate;
     }
-    console.log('delay current ' + this.textArr[this.current].time.delay);
     this.msg = 'current: ' + this.current
-    let msg = new SpeechSynthesisUtterance();
+    let curSpk = new SpeechSynthesisUtterance();
 
   
-    msg.text = this.textArr[this.current].text;
-    msg.volume = this.form.volume;
-    msg.rate = this.form.rate;
-    msg.pitch = this.form.pitch;
+    curSpk.text = this.textArr[this.current].text;
+    curSpk.volume = this.form.volume;
+    curSpk.rate = this.form.rate;
+    curSpk.pitch = this.form.pitch;
     
     if (this.form.voice) {
-      msg.voice = speechSynthesis.getVoices().filter(voice => voice.name == this.form.voice)[0];
+      curSpk.voice = speechSynthesis.getVoices().filter(voice => voice.name == this.form.voice)[0];
     }
-    console.log('delay start ' + this.delay);
     this.timer = setTimeout(()=>{
-      window.speechSynthesis.speak(msg);
+      window.speechSynthesis.speak(curSpk);
       if( this.current + 1 <  this.textArr.length) {
         this.speak(this.current + 1)
       }else{
@@ -177,10 +173,19 @@ export class WrapComponent implements OnInit {
     return timer
   }
 
+  makeArray(min: number, max: number, step: number): any[] {
+    let arr = [];
+    for(let i = min; i<max; i=i+step){
+      arr.push(i.toFixed(1))
+    }
+    return arr;
+  }
+
   checkFormatSub() {
     let checkStyleSub = this.form.text.split('\n');
     if(checkStyleSub[0] === '1'){
       this.format = 'str';
+      this.subStyleType = [];
       this.textToArrStr()
     }else if(checkStyleSub[0] === '[Script Info]'){
     // }else if(checkStyleSub[0] === '[Script Info]' || checkStyleSub[0].indexOf('Dialogue: ') >= 0){
