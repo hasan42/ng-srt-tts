@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { faStop, faPlay, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-wrap',
@@ -12,6 +13,7 @@ export class WrapComponent implements OnInit {
   faTimes = faTimes;
   faStop = faStop;
   faPlay = faPlay;
+  faGithub = faGithub;
 
   msg: string = null;
   error: boolean = false;
@@ -48,6 +50,7 @@ export class WrapComponent implements OnInit {
 
   time: number = 0;
   interval;
+  currentTime;
 
   constructor() {
     if ('speechSynthesis' in window) {
@@ -63,9 +66,7 @@ export class WrapComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    this.makeArray(-1, 1, 0.1)
-  }
+  ngOnInit() {}
 
   loadVoices(){
     this.voices = window.speechSynthesis.getVoices();
@@ -114,12 +115,9 @@ export class WrapComponent implements OnInit {
 
       this.textArr = filtredArr;
     }
-    
-    // console.log(this.textArr);
   }
 
   speak(nowmsg) {
-    // console.log(this.form);
     if(this.timelineChange && Number(this.form.timeline) !== -1){
       this.delay = 0;
       this.timelineChange = false;
@@ -130,7 +128,6 @@ export class WrapComponent implements OnInit {
     }
     this.msg = 'current: ' + this.current
     let curSpk = new SpeechSynthesisUtterance();
-
   
     curSpk.text = this.textArr[this.current].text;
     curSpk.volume = this.form.volume;
@@ -148,7 +145,6 @@ export class WrapComponent implements OnInit {
         this.msg = 'finish: ' + (this.current + 1)
       }
     }, this.delay)
-    
   }
 
   cleanTextSrt(text){
@@ -169,7 +165,6 @@ export class WrapComponent implements OnInit {
     }
     let delaySS = Number(delayArr[2]) * 1000
     let timer = delayHH + delayMM + delaySS
-    // console.log(timer);
     return timer
   }
 
@@ -208,7 +203,6 @@ export class WrapComponent implements OnInit {
       let el = item.replace('Style: ', '').split(',');
       styleArr.push(el[0])
     })
-    // console.log(styleArr);
     this.subStyleType = styleArr;
   }
 
@@ -295,11 +289,8 @@ export class WrapComponent implements OnInit {
 
         let timeArr = arr[1].split(' --> ');
         [obj.time.start, obj.time.end] = timeArr;
-        // console.log(timeArr);
         obj.time.timer = this.makeTimer(obj.time.start)
-        // console.log(obj.time.timer);
         obj.time.delay = obj.time.timer - delayCommon < 0 ? 0 : obj.time.timer - delayCommon
-        // console.log(obj.time.delay);
         delayCommon = obj.time.timer
 
         newArr.push(obj);
@@ -308,13 +299,18 @@ export class WrapComponent implements OnInit {
     this.textArr = newArr;
   }
 
+  setInterval(){
+    let delay = 1000 / this.form.rate
+    this.interval = setInterval(() => {
+      this.time++;
+    },delay);
+  }
+
   play() {
     this.stop();
     this.played = true;
     // this.checkFormatSub()
-    this.interval = setInterval(() => {
-      this.time++;
-    },1000)
+    this.setInterval()
     this.speak(0)
   }
   pause() {
@@ -327,8 +323,10 @@ export class WrapComponent implements OnInit {
   }
   stop() {
     this.played = false;
+    this.time = 0;
     window.speechSynthesis.cancel();
     clearTimeout(this.timer);
+    clearInterval(this.interval);
   }
 
 }

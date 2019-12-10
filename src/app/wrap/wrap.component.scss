@@ -6,8 +6,15 @@
   display: flex;
   justify-content: space-between;
 }
-.col {
-  flex-basis: 50%;
+.row_2 {
+  & > .col {
+    flex-basis: 50%;
+  }
+}
+.row_v {
+  align-items: center;
+  .col {
+  }
 }
 .option {
   margin: 5px 0;
@@ -351,6 +358,7 @@
     -webkit-appearance: button;
     appearance: button;
     outline: none;
+    cursor: pointer;
     option {
 
     }

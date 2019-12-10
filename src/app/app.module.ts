@@ -6,11 +6,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { WrapComponent } from './wrap/wrap.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { SecondsToTimePipe } from './seconds-to-time.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WrapComponent
+    WrapComponent,
+    SecondsToTimePipe
   ],
   imports: [
     BrowserModule,

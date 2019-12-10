@@ -1,9 +1,10 @@
 <div class="wrap">
-  <div>
+  <div class="header">
     <h1>Subtitles to Speech</h1>
+    <a class="link-git" href="https://github.com/hasan42/ng-srt-tts" target="_blank"><fa-icon [icon]="faGithub"></fa-icon></a>
   </div>
   <form>
-    <div class="row">
+    <div class="row row_2">
       <div class="col">
         <div class="option">
           <textarea [(ngModel)]="form.text" 
@@ -15,13 +16,54 @@
         </div>
       </div>
       <div class="col">
-        <div>{{time}}</div>
         <div *ngIf="!ssIsSupport" class="option">
           <span title="TTS NO support"><fa-icon [icon]="faTimes"></fa-icon> TTS NO support</span>
         </div>
         <div class="option">
-          <button class="control-btn" (click)="play()" *ngIf="!played" title="Start speech"><fa-icon [icon]="faPlay"></fa-icon> Start speech</button>
-          <button class="control-btn" (click)="stop()" *ngIf="played" title="Stop speech"><fa-icon [icon]="faStop"></fa-icon> Stop speech</button>
+          <div class="row row_v">
+            <div class="col">
+              <button class="control-btn" 
+                      (click)="play()" 
+                      *ngIf="!played" 
+                      title="Start speech">
+                <fa-icon [icon]="faPlay"></fa-icon> Start speech
+              </button>
+              <button class="control-btn" 
+                      (click)="stop()" 
+                      *ngIf="played" 
+                      title="Stop speech">
+                <fa-icon [icon]="faStop"></fa-icon> Stop speech
+              </button>
+            </div>
+            <div class="col">
+              {{time | secondsToTime}}
+            </div>
+            <div class="col">
+              Current sub:<br>
+              {{current}}
+            </div>
+          </div>
+        </div>
+        <div class="option">
+          <p>Selected sub index: {{form.timeline}}; Selected time: {{getTime()}} </p>
+          <div class="range">
+            <input type="range"
+                   min="-1" 
+                   [max]="textArr.length - 1" 
+                   step="1" 
+                   list="tickmarks" 
+                   name="timeline" 
+                   [(ngModel)]="form.timeline" 
+                   #timeline="ngModel"
+                   (click)="onChangeTimeline($event.target.value)"
+                   [value]="form.timeline">
+            <datalist id="tickmarks">
+              <option value="-1"></option>
+              <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
+                <option [value]="i"></option>
+              </ng-container>
+            </datalist>
+          </div>
         </div>
         <div class="option mt-10" *ngIf="subStyleType.length">
           <p>Select subtitles type to read</p>
@@ -45,27 +87,6 @@
                      (click)="onChangeStyleSub($event.target.value)">{{style}} ({{getCountSubByStyle(style)}})</label>
             </div>
           </ng-container>
-        </div>
-        <div class="option">
-          <p>Selected sub index: {{form.timeline}}; Selected time: {{getTime()}} </p>
-          <div class="range">
-            <input type="range"
-                   min="-1" 
-                   [max]="textArr.length - 1" 
-                   step="1" 
-                   list="tickmarks" 
-                   name="timeline" 
-                   [(ngModel)]="form.timeline" 
-                   #timeline="ngModel"
-                   (click)="onChangeTimeline($event.target.value)"
-                   [value]="form.timeline">
-            <datalist id="tickmarks">
-              <option value="-1"></option>
-              <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
-                <option [value]="i"></option>
-              </ng-container>
-            </datalist>
-          </div>
         </div>
         
         <h3>Settings</h3>
