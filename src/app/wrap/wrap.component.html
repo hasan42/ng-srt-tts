@@ -57,7 +57,7 @@
                    #timeline="ngModel"
                    (click)="onChangeTimeline($event.target.value)"
                    [value]="form.timeline">
-            <datalist id="tickmarks">
+            <datalist id="tickmarks" *ngIf="textArr.length < 300">
               <option value="-1"></option>
               <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
                 <option [value]="i"></option>
