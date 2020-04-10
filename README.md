@@ -76,6 +76,6 @@ Style: Default,a_FuturaRoundDemi,50,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,
 [Events]  
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text  
 Dialogue: 0,0:00:1.00,0:00:4.10,Default,,0,0,0,,Съешь еще этих французких булочек,  
-Dialogue: 0,0:00:1.00,0:00:4.10,Text,,0,0,0,,Lorem ipsum dolor sit amet 
-Dialogue: 0,0:00:5.12,0:00:7.54,Default,,0,0,0,,да выпей чаю 
+Dialogue: 0,0:00:1.00,0:00:4.10,Text,,0,0,0,,Lorem ipsum dolor sit amet  
+Dialogue: 0,0:00:5.12,0:00:7.54,Default,,0,0,0,,да выпей чаю  
 Dialogue: 0,0:00:5.55,0:00:10.19,Text,,0,0,0,,consectetur adipiscing elit
