@@ -29,7 +29,7 @@ export class WrapComponent implements OnInit {
   form = {
     text: null,
     voice: null,
-    timeline: -1,
+    timeline: "-1",
     volume: 1,
     rate: 1,
     ratedep: true,
