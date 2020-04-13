@@ -32,6 +32,7 @@ export class WrapComponent implements OnInit {
     timeline: -1,
     volume: 1,
     rate: 1,
+    ratedep: true,
     pitch: 1
   };
 
@@ -96,6 +97,11 @@ export class WrapComponent implements OnInit {
     this.filterTextByStyle();
   }
 
+  rateDepends(){
+    this.form.ratedep = !this.form.ratedep
+    console.log(this.form)
+  }
+
   getCountSubByStyle(style){
     return this.fullTextArr.filter(item=>item.style===style).length
   }
@@ -124,7 +130,8 @@ export class WrapComponent implements OnInit {
       this.current = Number(this.form.timeline);
     }else{
       this.current = nowmsg;
-      this.delay = this.textArr[this.current].time.delay / this.form.rate;
+      this.delay = this.form.ratedep === true ? this.textArr[this.current].time.delay / this.form.rate : this.textArr[this.current].time.delay;
+      console.log(this.delay);
     }
     this.msg = 'current: ' + this.current
     let curSpk = new SpeechSynthesisUtterance();
@@ -140,9 +147,9 @@ export class WrapComponent implements OnInit {
     this.timer = setTimeout(()=>{
       window.speechSynthesis.speak(curSpk);
       if( this.current + 1 <  this.textArr.length) {
-        this.speak(this.current + 1)
+        this.speak(this.current + 1);
       }else{
-        this.msg = 'finish: ' + (this.current + 1)
+        this.msg = 'finish: ' + (this.current + 1);
       }
     }, this.delay)
   }
@@ -300,7 +307,7 @@ export class WrapComponent implements OnInit {
   }
 
   setInterval(){
-    let delay = 1000 / this.form.rate
+    let delay = this.form.ratedep === true ? 1000 / this.form.rate : 1000;
     this.interval = setInterval(() => {
       this.time++;
     },delay);

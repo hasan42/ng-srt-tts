@@ -140,7 +140,17 @@
               </ng-container>
             </datalist>
           </div>
+          
         </div>
+          <div class="option">
+            <label for="ratedep" (click)="rateDepends()">
+              <input type="checkbox"
+                   name="ratedep" 
+                   [(ngModel)]="form.ratedep" 
+                   #ratedep="ngModel" 
+                   > Time depends rate
+            </label>
+          </div>
         <div class="option">
           <label for="pitch">Pitch: {{form.pitch}}</label>
           <div class="range">
