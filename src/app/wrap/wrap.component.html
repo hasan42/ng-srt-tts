@@ -3,14 +3,12 @@
     <h1>Subtitles to Speech</h1>
     <a class="link-git" href="https://github.com/hasan42/ng-srt-tts" target="_blank"><fa-icon [icon]="faGithub"></fa-icon></a>
   </div>
-  <form>
+  <form [formGroup]="form" (submit)="speak()">
     <div class="row row_2">
       <div class="col">
         <div class="option">
-          <textarea [(ngModel)]="form.text" 
+          <textarea formControlName="text" 
                     placeholder="Enter text"
-                    name="text" 
-                    #text="ngModel" 
                     x-webkit-speech 
                     (change)="checkFormatSub()"></textarea>
         </div>
@@ -23,12 +21,14 @@
           <div class="row row_v">
             <div class="col">
               <button class="control-btn" 
+                      type="button"
                       (click)="play()" 
                       *ngIf="!played" 
                       title="Start speech">
                 <fa-icon [icon]="faPlay"></fa-icon> Start speech
               </button>
               <button class="control-btn" 
+                      type="button"
                       (click)="stop()" 
                       *ngIf="played" 
                       title="Stop speech">
@@ -45,18 +45,15 @@
           </div>
         </div>
         <div class="option">
-          <p>Selected sub index: {{form.timeline === "-1" ? "by order" : form.timeline}}; Selected time: {{getTime()}} </p>
+          <p>Selected sub index: {{form.get('timeline').value === "-1" ? "by order" : form.get('timeline').value}}; Selected time: {{getTime()}} </p>
           <div class="range">
             <input type="range"
                    min="-1" 
                    [max]="textArr.length - 1" 
                    step="1" 
                    list="tickmarks" 
-                   name="timeline" 
-                   [(ngModel)]="form.timeline" 
-                   #timeline="ngModel"
-                   (click)="onChangeTimeline($event.target.value)"
-                   [value]="form.timeline">
+                   formControlName="timeline" 
+                   (click)="onChangeTimeline($event.target.value)">
             <datalist id="tickmarks" *ngIf="textArr.length < 300">
               <option value="-1"></option>
               <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
@@ -93,10 +90,7 @@
         <div class="option">
           <label for="voice">Voice</label>
           <div class="select mt-10">
-            <select [(ngModel)]="form.voice" 
-                    #voice="ngModel" 
-                    name="voice" 
-                    (change)="onChangeVoice($event.target.value)">
+            <select formControlName="voice">
               <ng-container *ngFor="let voice of voices; index as i; first as first; last as last">
                 <option [value]="voice.name">{{voice.name}}</option>
               </ng-container>
@@ -104,16 +98,14 @@
           </div>
         </div>
         <div class="option">
-          <label for="volume">Volume: {{form.volume}}</label>
+          <label for="volume">Volume: {{form.get('volume').value}}</label>
           <div class="range">
             <input type="range" 
                    min="0" 
                    max="1" 
                    step="0.1" 
                    list="volumemarks" 
-                   name="volume" 
-                   [(ngModel)]="form.volume" 
-                   #volume="ngModel" 
+                   formControlName="volume" 
                    [value]="1">
             <datalist id="volumemarks">
               <ng-container *ngFor="let tick of makeArray(0,1,0.1); index as i; first as first; last as last">
@@ -123,16 +115,14 @@
           </div>
         </div>
         <div class="option">
-          <label for="rate">Rate: {{form.rate}}</label>
+          <label for="rate">Rate: {{form.get('rate').value}}</label>
           <div class="range">
             <input type="range" 
                    min="0.1" 
                    max="10" 
                    step="0.1" 
                    list="ratemarks" 
-                   name="rate" 
-                   [(ngModel)]="form.rate" 
-                   #rate="ngModel" 
+                   formControlName="rate" 
                    [value]="1">
             <datalist id="ratemarks">
               <ng-container *ngFor="let tick of makeArray(0,10,1); index as i; first as first; last as last">
@@ -144,24 +134,18 @@
         </div>
           <div class="option">
             <label for="ratedep" (click)="rateDepends()">
-              <input type="checkbox"
-                   name="ratedep" 
-                   [(ngModel)]="form.ratedep" 
-                   #ratedep="ngModel" 
-                   > Time depends rate
+              <input type="checkbox" formControlName="ratedep"> Time depends rate
             </label>
           </div>
         <div class="option">
-          <label for="pitch">Pitch: {{form.pitch}}</label>
+          <label for="pitch">Pitch: {{form.get('pitch').value}}</label>
           <div class="range">
             <input type="range" 
                    min="0" 
                    max="2" 
                    step="0.1" 
                    list="pitchmarks" 
-                   name="pitch" 
-                   [(ngModel)]="form.pitch" 
-                   #pitch="ngModel" 
+                   formControlName="pitch" 
                    [value]="1">
             <datalist id="pitchmarks">
               <ng-container *ngFor="let tick of makeArray(0,2,0.1); index as i; first as first; last as last">
