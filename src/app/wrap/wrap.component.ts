@@ -21,7 +21,7 @@ export class WrapComponent implements OnInit {
   error: boolean = false; // ошибка
   ssIsSupport: boolean = true; // поддержка speechSynthesis
 
-  format: string = null; // формат субтитров
+  format: string = null; // формат субтитров ass или str
 
   voices: any = []; // доступные голоса
 
@@ -97,27 +97,14 @@ export class WrapComponent implements OnInit {
     }
   }
 
-  // измениние голоса
-  // onChangeVoice(voice){
-  //   this.form.voice = voice
-  // }
-
   // измениние таймлайна
-  onChangeTimeline(timeline){
+  onChangeTimeline(){
     this.timelineChange = true
-
-    // this.form.timeline = timeline
   }
 
   onChangeStyleSub(style){
     this.subStyleSelected = style;
     this.filterTextByStyle();
-  }
-
-  // зависимость скорости речи на время
-  rateDepends(){
-    // this.form.ratedep = !this.form.ratedep
-    console.log(this.form)
   }
 
   getCountSubByStyle(style){

@@ -14,6 +14,7 @@
         </div>
       </div>
       <div class="col">
+        <div>{{msg}}</div>
         <div *ngIf="!ssIsSupport" class="option">
           <span title="TTS NO support"><fa-icon [icon]="faTimes"></fa-icon> TTS NO support</span>
         </div>
@@ -53,7 +54,7 @@
                    step="1" 
                    list="tickmarks" 
                    formControlName="timeline" 
-                   (click)="onChangeTimeline($event.target.value)">
+                   (click)="onChangeTimeline()">
             <datalist id="tickmarks" *ngIf="textArr.length < 300">
               <option value="-1"></option>
               <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
@@ -133,9 +134,7 @@
           
         </div>
           <div class="option">
-            <label for="ratedep" (click)="rateDepends()">
-              <input type="checkbox" formControlName="ratedep"> Time depends rate
-            </label>
+            <input type="checkbox" id="ratedep" formControlName="ratedep"> <label for="ratedep">Time depends rate</label>
           </div>
         <div class="option">
           <label for="pitch">Pitch: {{form.get('pitch').value}}</label>
