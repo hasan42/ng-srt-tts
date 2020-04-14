@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms'
 import { faStop, faPlay, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -20,22 +21,14 @@ export class WrapComponent implements OnInit {
   error: boolean = false; // ошибка
   ssIsSupport: boolean = true; // поддержка speechSynthesis
 
-  format: string = null; // формат субтитров
+  format: string = null; // формат субтитров ass или str
 
   voices: any = []; // доступные голоса
 
   paused: boolean = false; // сейчас на паузе
   played: boolean = false; // сейчас проигрывается
 
-  form = {
-    text: null,
-    voice: null,
-    timeline: "-1",
-    volume: 1,
-    rate: 1,
-    ratedep: true,
-    pitch: 1
-  };
+  form: FormGroup;
 
   textArr: any = []; // массив субтитров
   fullTextArr: any = [];
@@ -70,7 +63,19 @@ export class WrapComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.form)
+    this.form = new FormGroup({
+      text: new FormControl(''),
+      voice: new FormControl(null),
+      timeline: new FormControl('-1'),
+      volume: new FormControl(1),
+      rate: new FormControl(1),
+      ratedep: new FormControl(true),
+      pitch: new FormControl(1)
+    })
+    console.log(this.form)
+  }
 
   // подгрузка доступных голосов
   loadVoices(){
@@ -81,36 +86,25 @@ export class WrapComponent implements OnInit {
   getTime() {
     // если есть субтитры
     if(this.textArr.length){
+      const timlineValue = +this.form.get('timeline').value
       // если таймлайн на первом пункте - выводим сообщение "по порядку"
-      if(+this.form.timeline === -1){
+      if(timlineValue === -1){
         return 'in order'
       }else{
         // получаем время старта из массива сабов
-        return this.textArr[this.form.timeline].time.start
+        return this.textArr[timlineValue].time.start
       }
     }
   }
 
-  // измениние голоса
-  onChangeVoice(voice){
-    this.form.voice = voice
-  }
-
   // измениние таймлайна
-  onChangeTimeline(timeline){
+  onChangeTimeline(){
     this.timelineChange = true
-    this.form.timeline = timeline
   }
 
   onChangeStyleSub(style){
     this.subStyleSelected = style;
     this.filterTextByStyle();
-  }
-
-  // зависимость скорости речи на время
-  rateDepends(){
-    this.form.ratedep = !this.form.ratedep
-    console.log(this.form)
   }
 
   getCountSubByStyle(style){
@@ -135,24 +129,24 @@ export class WrapComponent implements OnInit {
   }
 
   speak(nowmsg) {
-    if(this.timelineChange && Number(this.form.timeline) !== -1){
+    if(this.timelineChange && +this.form.get('timeline').value !== -1){
       this.delay = 0;
       this.timelineChange = false;
-      this.current = Number(this.form.timeline);
+      this.current = +this.form.get('timeline').value;
     }else{
       this.current = nowmsg;
-      this.delay = this.form.ratedep === true ? this.textArr[this.current].time.delay / this.form.rate : this.textArr[this.current].time.delay;
+      this.delay = this.form.get('ratedep').value === true ? this.textArr[this.current].time.delay / this.form.get('rate').value : this.textArr[this.current].time.delay;
     }
     this.msg = 'current: ' + this.current
     let curSpk = new SpeechSynthesisUtterance();
   
     curSpk.text = this.textArr[this.current].text;
-    curSpk.volume = this.form.volume;
-    curSpk.rate = this.form.rate;
-    curSpk.pitch = this.form.pitch;
+    curSpk.volume = this.form.get('volume').value;
+    curSpk.rate = this.form.get('rate').value;
+    curSpk.pitch = this.form.get('pitch').value;
     
-    if (this.form.voice) {
-      curSpk.voice = speechSynthesis.getVoices().filter(voice => voice.name == this.form.voice)[0];
+    if (this.form.get('voice').value) {
+      curSpk.voice = speechSynthesis.getVoices().filter(voice => voice.name == this.form.get('voice').value)[0];
     }
     this.timer = setTimeout(()=>{
       window.speechSynthesis.speak(curSpk);
@@ -175,12 +169,12 @@ export class WrapComponent implements OnInit {
 
   makeTimer(time){
     let delayArr = time.split(':');
-    let delayHH = ((Number(delayArr[0]) * 60) * 60) * 1000
-    let delayMM = (Number(delayArr[1]) * 60) * 1000
+    let delayHH = ((+delayArr[0] * 60) * 60) * 1000
+    let delayMM = (+delayArr[1] * 60) * 1000
     if(delayArr[2].indexOf(',') >= 0){
       delayArr[2] = delayArr[2].replace(',', '.')
     }
-    let delaySS = Number(delayArr[2]) * 1000
+    let delaySS = +delayArr[2] * 1000
     let timer = delayHH + delayMM + delaySS
     return timer
   }
@@ -194,7 +188,7 @@ export class WrapComponent implements OnInit {
   }
 
   checkFormatSub() {
-    let checkStyleSub = this.form.text.split('\n');
+    let checkStyleSub = this.form.get('text').value.split('\n');
     if(checkStyleSub[0] === '1'){
       this.format = 'str';
       this.subStyleType = [];
@@ -213,7 +207,7 @@ export class WrapComponent implements OnInit {
 
   takeStyleAss() {
     let styleArr = [];
-    let newArr = this.form.text.split('\n');
+    let newArr = this.form.get('text').value.split('\n');
     // let startText = newArr.findIndex(item => item.indexOf(' Styles]') >= 0);
     // let finishText = newArr.findIndex(item => item === '[Events]');
     newArr.filter(item=>item.indexOf('Style: ')===0).forEach((item,index)=>{
@@ -225,7 +219,7 @@ export class WrapComponent implements OnInit {
 
   textToArrAss() {
     let formatArr = [];
-    let newArr = this.form.text.split('\n');
+    let newArr = this.form.get('text').value.split('\n');
     let startText = newArr.findIndex(item => item === '[Events]');
     newArr.splice(0, startText + 1);
 
@@ -282,7 +276,7 @@ export class WrapComponent implements OnInit {
   }
 
   textToArrStr() {
-    this.textArr = this.form.text.split('\n\n');
+    this.textArr = this.form.get('text').value.split('\n\n');
 
     let newArr = [];
     let delayCommon = 0;
@@ -317,7 +311,7 @@ export class WrapComponent implements OnInit {
   }
 
   setInterval(){
-    let delay = this.form.ratedep === true ? 1000 / this.form.rate : 1000;
+    let delay = this.form.get('ratedep').value === true ? 1000 / this.form.get('rate').value : 1000;
     this.interval = setInterval(() => {
       this.time++;
     },delay);
@@ -342,7 +336,7 @@ export class WrapComponent implements OnInit {
     this.played = false;
     this.time = 0;
     window.speechSynthesis.cancel();
-    if(this.form.timeline !== '-1'){
+    if(this.form.get('timeline').value !== '-1'){
       this.timelineChange = true;
     }
     clearTimeout(this.timer);
