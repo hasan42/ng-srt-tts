@@ -30,11 +30,11 @@ export class WrapComponent implements OnInit {
 
   form: FormGroup;
 
-  textArr: any = []; // массив субтитров
-  fullTextArr: any = [];
-  subStyleType: any = [];
+  textArr: any = []; // массив субтитров которые читаются
+  fullTextArr: any = []; // полный массив субтитров
+  subStyleType: any = []; // для ass стили субтитров
 
-  subStyleSelected: string = null;
+  subStyleSelected: string = null; // для ass выбранный стиль
 
   current: number = 0; // текущий саб
 
@@ -64,7 +64,7 @@ export class WrapComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.form)
+    // форма
     this.form = new FormGroup({
       text: new FormControl(''),
       voice: new FormControl(null),
@@ -74,7 +74,6 @@ export class WrapComponent implements OnInit {
       ratedep: new FormControl(true),
       pitch: new FormControl(1)
     })
-    console.log(this.form)
   }
 
   // подгрузка доступных голосов
@@ -102,28 +101,35 @@ export class WrapComponent implements OnInit {
     this.timelineChange = true
   }
 
+  // при смене субтитров сохраняем выбранный стиль и фильтруем массив всех сабов
   onChangeStyleSub(style){
     this.subStyleSelected = style;
     this.filterTextByStyle();
   }
 
+  // возвращает количество субтитров по стилю
   getCountSubByStyle(style){
     return this.fullTextArr.filter(item=>item.style===style).length
   }
 
+  // для ass
+  // фильтрует стили субтитров
   filterTextByStyle() {
     let filtredArr = [];
     let fullArr = this.fullTextArr;
     let delayCommon = 0;
+    // если выбранны все - копируем все сабы в читаемые
     if(this.subStyleSelected === 'All'){
       this.textArr = fullArr;
     }else{
-      filtredArr = fullArr.filter(item=>item.style===this.subStyleSelected)
+      // если выбранный отдельный - фильтруем по стилю
+      filtredArr = fullArr.filter(item=>item.style===this.subStyleSelected);
+      // переназначаем задержки
       filtredArr.forEach((item,index)=>{
         item.time.delay = item.time.timer - delayCommon
         delayCommon = item.time.timer
-      })
-
+      });
+      // результат сохраняем в массив читаемых
       this.textArr = filtredArr;
     }
   }
