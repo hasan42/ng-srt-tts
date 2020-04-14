@@ -9,22 +9,23 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 })
 export class WrapComponent implements OnInit {
 
+  // иконки fontawesome
   faCheck = faCheck;
   faTimes = faTimes;
   faStop = faStop;
   faPlay = faPlay;
   faGithub = faGithub;
 
-  msg: string = null;
-  error: boolean = false;
-  ssIsSupport: boolean = true;
+  msg: string = null; // сообщение
+  error: boolean = false; // ошибка
+  ssIsSupport: boolean = true; // поддержка speechSynthesis
 
-  format: string = null;
+  format: string = null; // формат субтитров
 
-  voices: any = []
+  voices: any = []; // доступные голоса
 
-  paused: boolean = false;
-  played: boolean = false;
+  paused: boolean = false; // сейчас на паузе
+  played: boolean = false; // сейчас проигрывается
 
   form = {
     text: null,
@@ -36,31 +37,33 @@ export class WrapComponent implements OnInit {
     pitch: 1
   };
 
-  textArr: any = [];
+  textArr: any = []; // массив субтитров
   fullTextArr: any = [];
   subStyleType: any = [];
 
   subStyleSelected: string = null;
 
-  current: number = 0;
+  current: number = 0; // текущий саб
 
   timer: any = null;
-  delay: number = null;
+  delay: number = null; // задержка перед следующим проигрыванием
 
-  timelineChange: boolean = false;
+  timelineChange: boolean = false; // таймлайн изменен
 
-  time: number = 0;
+  time: number = 0; // счетчик времени
   interval;
   currentTime;
 
   constructor() {
+    // проверка поддержки speechSynthesis
     if ('speechSynthesis' in window) {
+      // поддерживыает загружаем
       this.msg = 'Support';
-
       window.speechSynthesis.onvoiceschanged = (e) => {
         this.loadVoices();
       };
     } else {
+      // не поддерживает - выводим сообщение об ошибке
       this.msg = 'No support';
       this.error = true;
       this.ssIsSupport = false;
@@ -69,24 +72,31 @@ export class WrapComponent implements OnInit {
 
   ngOnInit() {}
 
+  // подгрузка доступных голосов
   loadVoices(){
     this.voices = window.speechSynthesis.getVoices();
   }
 
+  // получение выбранного времени (чч:мм:сс) на таймлайне
   getTime() {
+    // если есть субтитры
     if(this.textArr.length){
-      if(Number(this.form.timeline) === -1){
+      // если таймлайн на первом пункте - выводим сообщение "по порядку"
+      if(+this.form.timeline === -1){
         return 'in order'
       }else{
+        // получаем время старта из массива сабов
         return this.textArr[this.form.timeline].time.start
       }
     }
   }
 
+  // измениние голоса
   onChangeVoice(voice){
     this.form.voice = voice
   }
 
+  // измениние таймлайна
   onChangeTimeline(timeline){
     this.timelineChange = true
     this.form.timeline = timeline
@@ -97,6 +107,7 @@ export class WrapComponent implements OnInit {
     this.filterTextByStyle();
   }
 
+  // зависимость скорости речи на время
   rateDepends(){
     this.form.ratedep = !this.form.ratedep
     console.log(this.form)
