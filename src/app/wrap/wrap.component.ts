@@ -131,7 +131,6 @@ export class WrapComponent implements OnInit {
     }else{
       this.current = nowmsg;
       this.delay = this.form.ratedep === true ? this.textArr[this.current].time.delay / this.form.rate : this.textArr[this.current].time.delay;
-      console.log(this.delay);
     }
     this.msg = 'current: ' + this.current
     let curSpk = new SpeechSynthesisUtterance();
@@ -332,6 +331,9 @@ export class WrapComponent implements OnInit {
     this.played = false;
     this.time = 0;
     window.speechSynthesis.cancel();
+    if(this.form.timeline !== '-1'){
+      this.timelineChange = true;
+    }
     clearTimeout(this.timer);
     clearInterval(this.interval);
   }
