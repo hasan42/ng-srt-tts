@@ -46,7 +46,10 @@
           </div>
         </div>
         <div class="option">
-          <p>Selected sub index: {{form.get('timeline').value === "-1" ? "by order" : form.get('timeline').value}}; Selected time: {{getTime()}} </p>
+          <p *ngIf="form.get('timeline').value !== -1; else subsReadByOrder">Selected sub index: {{form.get('timeline').value}}; Selected time: {{getTime()}} </p>
+          <ng-template #subsReadByOrder>
+            <p>Subs read by order.</p>
+          </ng-template>
           <div class="range">
             <input type="range"
                    min="-1" 

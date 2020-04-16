@@ -38,8 +38,8 @@ export class WrapComponent implements OnInit {
 
   current: number = 0; // текущий саб
 
-  timer: any = null;
-  delay: number = null; // задержка перед следующим проигрыванием
+  timer: any = null; // задержка проигрываения - отсчет от самого начала
+  delay: number = null; // задержка проигрываения - отсчет от предыдущего саба
 
   timelineChange: boolean = false; // таймлайн изменен
 
@@ -68,7 +68,7 @@ export class WrapComponent implements OnInit {
     this.form = new FormGroup({
       text: new FormControl(''),
       voice: new FormControl(null),
-      timeline: new FormControl('-1'),
+      timeline: new FormControl(-1),
       volume: new FormControl(1),
       rate: new FormControl(1),
       ratedep: new FormControl(true),
@@ -164,6 +164,7 @@ export class WrapComponent implements OnInit {
     }, this.delay)
   }
 
+  // очистка текста от лишних тегов
   cleanTextSrt(text){
     let clean = text.join(' ').replace(/<[^>]+>/g, '');
     return clean;
@@ -173,18 +174,21 @@ export class WrapComponent implements OnInit {
     return clean;
   }
 
-  makeTimer(time){
-    let delayArr = time.split(':');
-    let delayHH = ((+delayArr[0] * 60) * 60) * 1000
-    let delayMM = (+delayArr[1] * 60) * 1000
+  // время из чч:мм:сс переводим в милисекунды
+  makeTimer(time): number{
+    const delayArr = time.split(':'); // из отфарматированной строки делаем массив
+    const delayHH = ((+delayArr[0] * 60) * 60) * 1000; // часы в милисекунды
+    const delayMM = (+delayArr[1] * 60) * 1000; // минуты в милисекунды
+    // заменяем запятую точкой если надо
     if(delayArr[2].indexOf(',') >= 0){
       delayArr[2] = delayArr[2].replace(',', '.')
     }
-    let delaySS = +delayArr[2] * 1000
-    let timer = delayHH + delayMM + delaySS
+    const delaySS = +delayArr[2] * 1000; // секунды в милисекунды
+    const timer = delayHH + delayMM + delaySS; // собираем, отправляем
     return timer
   }
 
+  // создание массива для слайдеров настроек
   makeArray(min: number, max: number, step: number): any[] {
     let arr = [];
     for(let i = min; i<max; i=i+step){
@@ -193,21 +197,27 @@ export class WrapComponent implements OnInit {
     return arr;
   }
 
+  // проверка типа сабов
   checkFormatSub() {
+    // сабы бьем на строки
     let checkStyleSub = this.form.get('text').value.split('\n');
+    // проверяем первое значение
     if(checkStyleSub[0] === '1'){
-      this.format = 'str';
-      this.subStyleType = [];
-      this.textToArrStr()
+      // если "1" - str 
+      this.format = 'str'; // отмечаем формат
+      this.subStyleType = []; // очищаем массив стилей сабов для ass
+      this.textToArrStr() // обработчик сабов в читаемый вариант
     }else if(checkStyleSub[0] === '[Script Info]'){
     // }else if(checkStyleSub[0] === '[Script Info]' || checkStyleSub[0].indexOf('Dialogue: ') >= 0){
-      this.format = 'ass';
-      this.takeStyleAss()
-      this.textToArrAss()
+      // если фраза - ass
+      this.format = 'ass'; // отмечаем формат
+      this.takeStyleAss() // собираем имеющиеся стили
+      this.textToArrAss() // обрабатываем сабы в читаемый вариант
     }else{
-      this.format = null;
-      this.error = true;
-      this.msg = 'wrong format';
+      // если не один из двух
+      this.format = null; // сбрасываем формат
+      this.error = true; // отмечавем что етсь ошибка
+      this.msg = 'wrong format'; // выводим ошибку
     }
   }
 
@@ -342,7 +352,7 @@ export class WrapComponent implements OnInit {
     this.played = false;
     this.time = 0;
     window.speechSynthesis.cancel();
-    if(this.form.get('timeline').value !== '-1'){
+    if(+this.form.get('timeline').value !== -1){
       this.timelineChange = true;
     }
     clearTimeout(this.timer);
