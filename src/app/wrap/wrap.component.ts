@@ -331,8 +331,17 @@ export class WrapComponent implements OnInit {
     this.textArr = newArr;
   }
 
+  // устанавливаем таймер отсчета времени
   setInterval(){
+    // Если таймлайн изменился и не равен начальному положению
+    if(this.timelineChange && +this.form.get('timeline').value !== -1){
+      let cur = +this.form.get('timeline').value; // берем читаемый саб
+      this.time = this.textArr[cur].time.timer / 1000; // переназначаем время начала отсчета
+    }
+
+    // если скорость речи зависит от скорости воспроизведения - вычесляем новую длительность секунды
     let delay = this.form.get('ratedep').value === true ? 1000 / this.form.get('rate').value : 1000;
+    // таймер изменения времени - +1 каждую секунду
     this.interval = setInterval(() => {
       this.time++;
     },delay);
