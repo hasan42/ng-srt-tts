@@ -76,9 +76,10 @@ export class WrapComponent implements OnInit {
     })
   }
 
+  // загрузка файла через drag and drop
   uploadFile(event) {
-    this.form.patchValue({text: event})
-    this.checkFormatSub()
+    this.form.patchValue({text: event}) // сохраняем текст в форму
+    this.checkFormatSub() // обрабатываем
   }
 
   // подгрузка доступных голосов
