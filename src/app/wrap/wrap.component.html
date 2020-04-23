@@ -10,6 +10,8 @@
           <textarea formControlName="text" 
                     placeholder="Enter text"
                     x-webkit-speech 
+                    appDragDrop 
+                    (onFileDropped)="uploadFile($event)"
                     (change)="checkFormatSub()"></textarea>
         </div>
       </div>

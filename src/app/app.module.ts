@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 import { WrapComponent } from './wrap/wrap.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SecondsToTimePipe } from './seconds-to-time.pipe';
+import { DragDropDirective } from './drag-drop.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     WrapComponent,
-    SecondsToTimePipe
+    SecondsToTimePipe,
+    DragDropDirective
   ],
   imports: [
     BrowserModule,

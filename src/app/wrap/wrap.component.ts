@@ -76,6 +76,11 @@ export class WrapComponent implements OnInit {
     })
   }
 
+  uploadFile(event) {
+    this.form.patchValue({text: event})
+    this.checkFormatSub()
+  }
+
   // подгрузка доступных голосов
   loadVoices(){
     this.voices = window.speechSynthesis.getVoices();
@@ -202,12 +207,12 @@ export class WrapComponent implements OnInit {
     // сабы бьем на строки
     let checkStyleSub = this.form.get('text').value.split('\n');
     // проверяем первое значение
-    if(checkStyleSub[0] === '1'){
+    if(checkStyleSub[0].trim() === '1'){
       // если "1" - str 
       this.format = 'str'; // отмечаем формат
       this.subStyleType = []; // очищаем массив стилей сабов для ass
       this.textToArrStr() // обработчик сабов в читаемый вариант
-    }else if(checkStyleSub[0] === '[Script Info]'){
+    }else if(checkStyleSub[0].trim() === '[Script Info]'){
     // }else if(checkStyleSub[0] === '[Script Info]' || checkStyleSub[0].indexOf('Dialogue: ') >= 0){
       // если фраза - ass
       this.format = 'ass'; // отмечаем формат
@@ -236,7 +241,7 @@ export class WrapComponent implements OnInit {
   textToArrAss() {
     let formatArr = [];
     let newArr = this.form.get('text').value.split('\n');
-    let startText = newArr.findIndex(item => item === '[Events]');
+    let startText = newArr.findIndex(item => item.trim() === '[Events]');
     newArr.splice(0, startText + 1);
 
     let formatSub = newArr.splice(0, 1);
@@ -260,7 +265,6 @@ export class WrapComponent implements OnInit {
         let last = arr.slice(formatSubLength - 1);
         last = this.cleanTextAss(last);
         obj[keys[formatSubLength - 1]] = last
-
         let timer = this.makeTimer(obj['Start'])
 
         let standartObj = {
