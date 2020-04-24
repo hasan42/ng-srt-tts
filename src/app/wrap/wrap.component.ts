@@ -88,6 +88,13 @@ export class WrapComponent implements OnInit {
     })
   }
 
+  hotKeyStartPlay(){
+    if(!this.played)
+      this.play()
+    else
+      this.stop()
+  }
+
   // загрузка файла через drag and drop
   uploadFile(event) {
     this.form.patchValue({text: event}) // сохраняем текст в форму
@@ -359,6 +366,12 @@ export class WrapComponent implements OnInit {
     },delay);
   }
 
+  hotKeyStartPlay(){
+    if(!this.played)
+      this.play()
+    else
+      this.stop()
+  }
   play() {
     this.stop();
     this.played = true;
