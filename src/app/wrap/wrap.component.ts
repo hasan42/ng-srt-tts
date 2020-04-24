@@ -3,6 +3,18 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms'
 import { faStop, faPlay, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
+interface SubItem {
+  id: number,
+  time: {
+    start: string,
+    end: string,
+    delay: number,
+    timer: number
+  }, 
+  text: string,
+  style?: string
+}
+
 @Component({
   selector: 'app-wrap',
   templateUrl: './wrap.component.html',
