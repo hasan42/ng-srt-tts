@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { TooltipModule } from 'ng2-tooltip-directive';
+import { Ng5SliderModule } from 'ng5-slider';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,7 +25,7 @@ import { DragDropDirective } from './drag-drop.directive';
     ReactiveFormsModule,
     FontAwesomeModule,
     NgSelectModule,
-    TooltipModule
+    Ng5SliderModule
   ],
   providers: [],
   bootstrap: [AppComponent]

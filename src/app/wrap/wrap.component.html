@@ -5,7 +5,7 @@
     </div>
 
     <div class="header__col">
-      <span tooltip="[Shift + Space] - start/stop speech"><fa-icon [icon]="faQuestionCircle"></fa-icon></span>
+      <span ><fa-icon [icon]="faQuestionCircle"></fa-icon></span>
       <a class="link-git" href="https://github.com/hasan42/ng-srt-tts" target="_blank"><fa-icon [icon]="faGithub"></fa-icon></a>
     </div>
   </div>
@@ -59,19 +59,7 @@
             <p>Subs read by order.</p>
           </ng-template>
           <div class="range">
-            <input type="range"
-                   min="-1" 
-                   [max]="textArr.length - 1" 
-                   step="1" 
-                   list="tickmarks" 
-                   formControlName="timeline" 
-                   (click)="onChangeTimeline()">
-            <datalist id="tickmarks" *ngIf="textArr.length < 300">
-              <option value="-1"></option>
-              <ng-container *ngFor="let tick of textArr; index as i; first as first; last as last">
-                <option [value]="i"></option>
-              </ng-container>
-            </datalist>
+            <ng5-slider [options]="{ floor: -1, ceil: textArr.length - 1, step: 1, showSelectionBar: true, showTicks: true }" (click)="onChangeTimeline()" formControlName="timeline"></ng5-slider>
           </div>
         </div>
         <div class="option mt-10" *ngIf="subStyleType.length">
@@ -103,46 +91,18 @@
           <label for="voice">Voice</label>
           <div class="select mt-10">
             <ng-select [items]="voices" bindLabel="name" bindValue="name" formControlName="voice"></ng-select>
-
-            <!-- <select formControlName="voice">
-              <ng-container *ngFor="let voice of voices; index as i; first as first; last as last">
-                <option [value]="voice.name">{{voice.name}}</option>
-              </ng-container>
-            </select> -->
           </div>
         </div>
         <div class="option">
           <label for="volume">Volume: {{form.get('volume').value}}</label>
           <div class="range">
-            <input type="range" 
-                   min="0" 
-                   max="1" 
-                   step="0.1" 
-                   list="volumemarks" 
-                   formControlName="volume" 
-                   [value]="1">
-            <datalist id="volumemarks">
-              <ng-container *ngFor="let tick of makeArray(0,1,0.1); index as i; first as first; last as last">
-                <option [value]="tick"></option>
-              </ng-container>
-            </datalist>
+            <ng5-slider [options]="{ floor: 0, ceil: 1, step:0.1, showTicks: true }" formControlName="volume"></ng5-slider>
           </div>
         </div>
         <div class="option">
           <label for="rate">Rate: {{form.get('rate').value}}</label>
           <div class="range">
-            <input type="range" 
-                   min="0.1" 
-                   max="10" 
-                   step="0.1" 
-                   list="ratemarks" 
-                   formControlName="rate" 
-                   [value]="1">
-            <datalist id="ratemarks">
-              <ng-container *ngFor="let tick of makeArray(0,10,1); index as i; first as first; last as last">
-                <option [value]="tick"></option>
-              </ng-container>
-            </datalist>
+            <ng5-slider [options]="{ floor: 0, ceil: 10, step:0.1, showTicks: true }" formControlName="rate"></ng5-slider>
           </div>
           
         </div>
@@ -152,18 +112,7 @@
         <div class="option">
           <label for="pitch">Pitch: {{form.get('pitch').value}}</label>
           <div class="range">
-            <input type="range" 
-                   min="0" 
-                   max="2" 
-                   step="0.1" 
-                   list="pitchmarks" 
-                   formControlName="pitch" 
-                   [value]="1">
-            <datalist id="pitchmarks">
-              <ng-container *ngFor="let tick of makeArray(0,2,0.1); index as i; first as first; last as last">
-                <option [value]="tick"></option>
-              </ng-container>
-            </datalist>
+            <ng5-slider [options]="{ floor: 0, ceil: 2, step:0.1, showTicks: true }" formControlName="pitch"></ng5-slider>
           </div>
         </div>
       </div>
