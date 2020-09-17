@@ -9,6 +9,7 @@
 .row_2 {
   & > .col {
     flex-basis: 50%;
+    max-width: 50%;
   }
 }
 .row_v {
@@ -343,6 +344,7 @@
     left: 100%;
   }
 }
+
 
 .select {
   position: relative;

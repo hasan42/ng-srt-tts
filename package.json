@@ -30,8 +30,11 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
     "@fortawesome/free-brands-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@ng-select/ng-select": "^2.20.5",
     "core-js": "^2.5.4",
+    "ng2-tooltip-directive": "^2.9.22",
     "rxjs": "~6.3.3",
+    "rxjs-compat": "^6.6.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
   },
@@ -61,6 +64,9 @@
   "build": {
     "appId": "com.example.companyDashboard",
     "productName": "ng-srt-tts",
-    "files": ["**/*", "dist/**/*"]
+    "files": [
+      "**/*",
+      "dist/**/*"
+    ]
   }
 }

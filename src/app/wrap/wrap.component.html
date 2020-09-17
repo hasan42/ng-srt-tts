@@ -1,7 +1,13 @@
 <div class="wrap" (document:keydown.shift.space)="hotKeyStartPlay()">
   <div class="header">
-    <h1>Subtitles to Speech</h1>
-    <a class="link-git" href="https://github.com/hasan42/ng-srt-tts" target="_blank"><fa-icon [icon]="faGithub"></fa-icon></a>
+    <div class="header__col">
+      <h1>Subtitles to Speech</h1>
+    </div>
+
+    <div class="header__col">
+      <span tooltip="[Shift + Space] - start/stop speech"><fa-icon [icon]="faQuestionCircle"></fa-icon></span>
+      <a class="link-git" href="https://github.com/hasan42/ng-srt-tts" target="_blank"><fa-icon [icon]="faGithub"></fa-icon></a>
+    </div>
   </div>
   <form [formGroup]="form">
     <div class="row row_2">
@@ -96,11 +102,13 @@
         <div class="option">
           <label for="voice">Voice</label>
           <div class="select mt-10">
-            <select formControlName="voice">
+            <ng-select [items]="voices" bindLabel="name" bindValue="name" formControlName="voice"></ng-select>
+
+            <!-- <select formControlName="voice">
               <ng-container *ngFor="let voice of voices; index as i; first as first; last as last">
                 <option [value]="voice.name">{{voice.name}}</option>
               </ng-container>
-            </select>
+            </select> -->
           </div>
         </div>
         <div class="option">

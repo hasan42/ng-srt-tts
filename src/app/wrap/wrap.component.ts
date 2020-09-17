@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms'
-import { faStop, faPlay, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faStop, faPlay, faCheck, faTimes, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 interface SubItem {
@@ -28,6 +28,7 @@ export class WrapComponent implements OnInit {
   faStop = faStop;
   faPlay = faPlay;
   faGithub = faGithub;
+  faQuestionCircle= faQuestionCircle;
 
   msg: string = null; // сообщение
   error: boolean = false; // ошибка
@@ -85,7 +86,7 @@ export class WrapComponent implements OnInit {
       rate: new FormControl(1),
       ratedep: new FormControl(true),
       pitch: new FormControl(1)
-    })
+    });
   }
 
   // загрузка файла через drag and drop
