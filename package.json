@@ -1,10 +1,17 @@
 {
   "name": "ng-srt-tts",
+  "description": "get sound your subs",
+  "author": "iRustam",
   "version": "0.0.0",
+  "main": "main.js",
   "scripts": {
+    "electron": "ng build --base-href ./ && electron .",
+    "electron:build": "ng build --prod --base-href ./  && electron-builder",
+    "electron:package": "electron-packager . NgSrtTts --platform=win32 --arch=x64",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -33,10 +40,12 @@
     "@angular/cli": "~7.3.5",
     "@angular/compiler-cli": "~7.2.0",
     "@angular/language-service": "~7.2.0",
-    "@types/node": "~8.9.4",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
+    "electron": "^10.1.2",
+    "electron-builder": "^22.8.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.0.0",
@@ -48,5 +57,10 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2"
+  },
+  "build": {
+    "appId": "com.example.companyDashboard",
+    "productName": "ng-srt-tts",
+    "files": ["**/*", "dist/**/*"]
   }
 }
