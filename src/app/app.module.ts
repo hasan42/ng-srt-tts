@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Ng5SliderModule } from 'ng5-slider';
+import { NgxPopperModule } from 'ngx-popper';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,7 +26,8 @@ import { DragDropDirective } from './drag-drop.directive';
     ReactiveFormsModule,
     FontAwesomeModule,
     NgSelectModule,
-    Ng5SliderModule
+    Ng5SliderModule,
+    NgxPopperModule.forRoot({})
   ],
   providers: [],
   bootstrap: [AppComponent]

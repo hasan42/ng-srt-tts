@@ -5,8 +5,11 @@
     </div>
 
     <div class="header__col">
-      <span ><fa-icon [icon]="faQuestionCircle"></fa-icon></span>
+      <span #popper1 [popper]="popper1Content" [popperTrigger]="'hover'"><fa-icon [icon]="faQuestionCircle"></fa-icon></span>
       <a class="link-git" href="https://github.com/hasan42/ng-srt-tts" target="_blank"><fa-icon [icon]="faGithub"></fa-icon></a>
+      <popper-content #popper1Content>
+        [Shift + Space] - start/stop speech
+      </popper-content>
     </div>
   </div>
   <form [formGroup]="form">
