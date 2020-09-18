@@ -7,7 +7,7 @@
   "scripts": {
     "electron": "ng build --base-href ./ && electron .",
     "electron:build": "ng build --prod --base-href ./  && electron-builder",
-    "electron:package": "electron-packager . NgSrtTts --platform=win32 --arch=x64",
+    "electron:package": "electron-packager ./dist/ng-srt-tts/ NgSrtTts --platform=win32 --arch=x64",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -51,6 +51,7 @@
     "codelyzer": "~4.5.0",
     "electron": "^10.1.2",
     "electron-builder": "^22.8.0",
+    "electron-packager": "^15.1.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.0.0",
